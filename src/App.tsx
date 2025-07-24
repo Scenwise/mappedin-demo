@@ -1,34 +1,25 @@
 import React from 'react';
-import { MapView, useMapData, useMap, Label } from '@mappedin/react-sdk';
+import MappedInMap from './Map';
 
-function MyCustomComponent() {
-  const { mapData } = useMap();
-
-  return mapData.getByType('space').map((space) => {
-    return <Label target={space.center} text={space.name} />;
-  });
-}
+import MapSelector from '@/components/MapSelector';
 
 export default function App() {
-  // See Demo API key Terms and Conditions
-  // https://developer.mappedin.com/v6/demo-keys-and-maps/
-  const { isLoading, error, mapData } = useMapData({
-    key: 'mik_yeBk0Vf0nNJtpesfu560e07e5',
-    secret: 'mis_2g9ST8ZcSFb5R9fPnsvYhrX3RyRwPtDGbMGweCYKEq385431022',
-    mapId: '65c0ff7430b94e3fabd5bb8c',
-  });
+  const [mapId, setMapId] = React.useState<string>('65c0ff7430b94e3fabd5bb8c');
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  return (
+    <div className="p-4 w-screen h-screen grid grid-rows-[max-content_auto] grid-cols-[1fr] gap-4">
+      <header className="flex items-center justify-between">
+        <h1 className="scroll-m-20 text-xl font-medium tracking-tight text-balance">
+          Scenwise{' '}
+          <span className="text-muted-foreground">| MappedIn Demo</span>
+        </h1>
 
-  if (error) {
-    return <div>{error.message}</div>;
-  }
+        <MapSelector value={mapId} onSelect={setMapId} />
+      </header>
 
-  return mapData ? (
-    <MapView mapData={mapData}>
-      <MyCustomComponent />
-    </MapView>
-  ) : null;
+      <main className="w-full h-full bg-(--sidebar) rounded-2xl overflow-hidden">
+        <MappedInMap mapId={mapId} key={mapId} />
+      </main>
+    </div>
+  );
 }
