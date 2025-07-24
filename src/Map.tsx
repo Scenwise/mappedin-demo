@@ -2,6 +2,7 @@ import React from 'react';
 import { MapView, useMapData, useMap, Label } from '@mappedin/react-sdk';
 import { LoaderCircle } from 'lucide-react';
 import { TypographyMuted } from './components/ui/typography/muted';
+import FloorSelector from './components/FloorSelector';
 
 function MyCustomComponent() {
   const { mapData } = useMap();
@@ -26,7 +27,7 @@ export default function MappedInMap({ mapId }: MappedInMapProps) {
 
   if (isLoading || error) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center gap-6">
+      <div className="w-full h-full flex flex-col items-center justify-center gap-6 bg-(--sidebar) rounded-2xl overflow-hidden">
         {isLoading && (
           <>
             <LoaderCircle size={32} className="animate-spin" />
@@ -39,8 +40,12 @@ export default function MappedInMap({ mapId }: MappedInMapProps) {
   }
 
   return mapData ? (
-    <MapView mapData={mapData}>
+    <MapView
+      mapData={mapData}
+      className="w-full h-full bg-(--sidebar) rounded-2xl overflow-hidden"
+    >
       <MyCustomComponent />
+      <FloorSelector />
     </MapView>
   ) : null;
 }
