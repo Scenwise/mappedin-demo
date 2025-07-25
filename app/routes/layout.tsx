@@ -1,10 +1,11 @@
 import React from 'react';
-import MappedInMap from './Map';
+import MappedInMap from '@/components/MappedInMap';
 
 import MapSelector from '@/components/MapSelector';
-import { SidebarProvider } from './components/ui/sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import { Outlet } from 'react-router';
 
-export default function App() {
+export default function Layout() {
   const [mapId, setMapId] = React.useState<string>('65c0ff7430b94e3fabd5bb8c');
 
   return (
@@ -19,7 +20,9 @@ export default function App() {
           <MapSelector value={mapId} onSelect={setMapId} />
         </header>
 
-        <MappedInMap mapId={mapId} key={mapId} />
+        <MappedInMap mapId={mapId} key={mapId}>
+          <Outlet />
+        </MappedInMap>
       </div>
     </SidebarProvider>
   );
