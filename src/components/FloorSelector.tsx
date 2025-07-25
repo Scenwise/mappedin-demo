@@ -17,16 +17,16 @@ export default function FloorSelector() {
     .sort((a, b) => a.elevation - b.elevation);
 
   return (
-    <div className="flex flex-col w-9 gap-1">
-      {floors.map((floor, idx) => {
+    <div className="flex flex-col gap-1">
+      {floors.map((floor) => {
         return (
           <Button
-            key={idx}
+            key={floor.id}
             value={floor.id}
             onClick={() => handleFloorChange(floor.id)}
             variant={currentFloorId === floor.id ? 'default' : 'ghost'}
           >
-            {floor.elevation}
+            {floor.name}
           </Button>
         );
       })}
