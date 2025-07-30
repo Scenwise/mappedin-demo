@@ -119,13 +119,14 @@ export default function MappedInMap({ mapId, children }: MappedInMapProps) {
       <InteractionManager />
       <ConnectionMarkers />
 
-      <nav className="col-[3/4] row-[2/3] overflow-y-auto">
-        <FloorSelector />
-      </nav>
-
+      {/* The following components will be siblings to the map, not children */}
       <aside className="col-[1/2] row-[2/3] overflow-y-auto overflow-x-hidden">
         {children}
       </aside>
+
+      <nav className="col-[3/4] row-[2/3] overflow-y-auto">
+        <FloorSelector />
+      </nav>
     </MapView>
   ) : null;
 }

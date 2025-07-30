@@ -65,7 +65,6 @@ export default function BuildingInfo() {
           <TabsList>
             <TabsTrigger value="spaces">Spaces</TabsTrigger>
             <TabsTrigger value="pois">Points of Interest</TabsTrigger>
-            <TabsTrigger value="connections">Connections</TabsTrigger>
           </TabsList>
 
           <SidebarMenu>
