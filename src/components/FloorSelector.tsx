@@ -16,6 +16,10 @@ export default function FloorSelector() {
     .getByType('floor')
     .sort((a, b) => a.elevation - b.elevation);
 
+  mapView.on('floor-change', (payload) => {
+    setCurrentFloorId(payload.floor.id);
+  });
+
   return (
     <div className="flex flex-col gap-1">
       {floors.map((floor) => {

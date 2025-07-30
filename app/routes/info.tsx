@@ -11,15 +11,15 @@ import {
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { Building, Trees } from 'lucide-react';
-import SpaceTreeCollapsible from './SpaceTreeCollapsible';
 import type { JSX } from 'react/jsx-runtime';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import SpaceTreeCollapsible from '@/components/SpaceTreeCollapsible';
 
 type TabOptions = 'spaces' | 'pois';
 
-export default function BuildingInfo() {
+export default function Info() {
   const { mapData } = useMap();
 
   const floors = mapData
@@ -55,7 +55,7 @@ export default function BuildingInfo() {
   const [tab, setTab] = useState<TabOptions>('spaces');
 
   return (
-    <div className="col-[1/2] row-[2/3] overflow-y-auto overflow-x-hidden">
+    <>
       <div className="sticky top-0 bg-background z-10 py-2">
         <h2 className="text-lg font-semibold">{mapData.mapName}</h2>
       </div>
@@ -84,7 +84,7 @@ export default function BuildingInfo() {
           </SidebarMenu>
         </Tabs>
       </div>
-    </div>
+    </>
   );
 }
 

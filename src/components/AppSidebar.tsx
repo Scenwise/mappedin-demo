@@ -9,6 +9,7 @@ import { Info, Navigation, Settings2 } from 'lucide-react';
 import { NavLink } from 'react-router';
 import { Tooltip, TooltipContent } from '@/components/ui/tooltip';
 import { TooltipTrigger } from '@radix-ui/react-tooltip';
+import { useLocation } from 'react-router-dom';
 
 export default function AppSidebar() {
   const items = [
@@ -29,6 +30,8 @@ export default function AppSidebar() {
     },
   ];
 
+  const location = useLocation();
+
   return (
     <Sidebar collapsible="icon" variant="floating">
       <SidebarContent>
@@ -37,7 +40,10 @@ export default function AppSidebar() {
             {items.map((item) => (
               <Tooltip key={item.to}>
                 <TooltipTrigger>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={location.pathname === item.to}
+                  >
                     <NavLink to={item.to}>{item.icon && <item.icon />}</NavLink>
                   </SidebarMenuButton>
                 </TooltipTrigger>
