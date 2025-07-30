@@ -1,3 +1,4 @@
+import HeatmapDemo from '@/components/demo-cards/HeatmapDemo';
 import StackedFloorsDemo from '@/components/demo-cards/StackedFloorsDemo';
 
 export default function Demos() {
@@ -7,8 +8,9 @@ export default function Demos() {
         <h2 className="text-lg font-semibold">Demos</h2>
       </div>
 
-      <div>
+      <div className="space-y-2">
         <StackedFloorsDemo />
+        <HeatmapDemo />
       </div>
     </>
   );

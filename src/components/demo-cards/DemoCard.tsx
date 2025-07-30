@@ -51,12 +51,14 @@ export default function DemoCard({
         )}
         <CardAction>
           <Tooltip>
-            <TooltipTrigger>
-              <Switch
-                checked={enabled}
-                onCheckedChange={onCheckedChange}
-                disabled={!!disabled}
-              />
+            <TooltipTrigger asChild>
+              <div>
+                <Switch
+                  checked={enabled}
+                  onCheckedChange={onCheckedChange}
+                  disabled={!!disabled}
+                />
+              </div>
             </TooltipTrigger>
 
             <TooltipContent side="right">
