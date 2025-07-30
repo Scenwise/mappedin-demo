@@ -16,11 +16,13 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import SpaceTreeCollapsible from '@/components/SpaceTreeCollapsible';
+import useClickNavigation from '@/composables/useClickNavigation';
 
 type TabOptions = 'spaces' | 'pois';
 
 export default function Info() {
   const { mapData } = useMap();
+  useClickNavigation();
 
   const floors = mapData
     .getByType('floor')

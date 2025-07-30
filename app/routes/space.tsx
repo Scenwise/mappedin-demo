@@ -4,9 +4,11 @@ import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ExternalLink, Layers } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import useClickNavigation from '@/composables/useClickNavigation';
 
 export default function Space({ params }: Route.ComponentProps) {
   const { mapData } = useMap();
+  useClickNavigation();
 
   const space = mapData.getById('space', params.id);
 
