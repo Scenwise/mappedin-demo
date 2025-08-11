@@ -20,10 +20,12 @@ import {
 import type { Coordinate } from '@mappedin/react-sdk/mappedin-js/src';
 
 interface LocationSelectorProps {
+  location: TNavigationTarget | undefined;
   onLocationSelect: (target: TNavigationTarget) => void;
 }
 
 export default function LocationSelector({
+  location,
   onLocationSelect,
 }: LocationSelectorProps) {
   const { mapData } = useMap();
@@ -43,8 +45,12 @@ export default function LocationSelector({
       .sort((a, b) => a.name.localeCompare(b.name)),
   }));
 
-  const [spaceId, setSpaceId] = useState<string>('');
-  const [coordinate, setCoordinate] = useState<Coordinate>();
+  const [spaceId, setSpaceId] = useState<string>(
+    location?.__type === 'space' ? location.id : ' ',
+  );
+  const [coordinate, setCoordinate] = useState<Coordinate | undefined>(
+    location?.__type === 'coordinate' ? location : undefined,
+  );
 
   function handleSpaceSelect(spaceId: string) {
     setSpaceId(spaceId);

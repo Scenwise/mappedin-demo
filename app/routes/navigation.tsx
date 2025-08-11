@@ -1,17 +1,18 @@
 import LocationSelector from '@/components/LocationSelector';
+import { PageHeader } from '@/components/PageHeader';
+import { AppContext } from '@/context/AppContext';
 import { useMap } from '@mappedin/react-sdk';
-import type { TNavigationTarget } from '@mappedin/react-sdk/mappedin-js/src/types';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 
 export default function Navigation() {
   const { mapData, mapView } = useMap();
 
-  const [from, setFrom] = useState<TNavigationTarget>();
-  const [to, setTo] = useState<TNavigationTarget>();
+  const { navigationFrom, setNavigationFrom, navigationTo, setNavigationTo } =
+    useContext(AppContext);
 
   useEffect(() => {
-    if (from && to) {
-      const directions = mapData.getDirections(from, to);
+    if (navigationFrom && navigationTo) {
+      const directions = mapData.getDirections(navigationFrom, navigationTo);
 
       if (!directions) return;
 
@@ -19,17 +20,21 @@ export default function Navigation() {
       mapView.Paths.removeAll();
       mapView.Paths.add(directions.coordinates);
     }
-  }, [from, to, mapData, mapView.Paths]);
+  }, [navigationFrom, navigationTo, mapData, mapView.Paths]);
 
   return (
     <>
-      <div className="sticky top-0 bg-background z-10 py-2">
-        <h2 className="text-lg font-semibold">Navigation</h2>
-      </div>
+      <PageHeader title="Navigation" />
 
       <div className="space-y-2 py-2">
-        <LocationSelector onLocationSelect={setFrom} />
-        <LocationSelector onLocationSelect={setTo} />
+        <LocationSelector
+          location={navigationFrom}
+          onLocationSelect={setNavigationFrom}
+        />
+        <LocationSelector
+          location={navigationTo}
+          onLocationSelect={setNavigationTo}
+        />
       </div>
     </>
   );

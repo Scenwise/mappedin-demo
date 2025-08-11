@@ -34,6 +34,7 @@ function MyCustomComponent() {
       .map((space) => {
         return (
           <Label
+            key={space.id}
             target={space.center}
             text={space.name}
             options={{ interactive: true }}
@@ -43,6 +44,7 @@ function MyCustomComponent() {
     ...mapData.getByType('point-of-interest').map((poi) => {
       return (
         <Label
+          key={poi.id}
           target={poi.anchorTarget}
           text={poi.name}
           options={{ interactive: true }}
@@ -96,9 +98,14 @@ export default function MappedInMap({ mapId, children }: MappedInMapProps) {
     mapId,
   });
 
+  const mapClassName =
+    'w-full h-full bg-(--sidebar) rounded-2xl overflow-hidden col-[2/3] row-[1/3] ring ring-gray-100';
+
   if (isLoading || error) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center gap-6 bg-(--sidebar) rounded-2xl overflow-hidden col-[2/3] row-[2/3]">
+      <div
+        className={`${mapClassName} flex flex-col items-center justify-center gap-6`}
+      >
         {isLoading && (
           <>
             <LoaderCircle size={32} className="animate-spin" />
@@ -111,10 +118,7 @@ export default function MappedInMap({ mapId, children }: MappedInMapProps) {
   }
 
   return mapData ? (
-    <MapView
-      mapData={mapData}
-      className="w-full h-full bg-(--sidebar) rounded-2xl overflow-hidden col-[2/3] row-[2/3] ring ring-gray-100"
-    >
+    <MapView mapData={mapData} className={mapClassName}>
       <MyCustomComponent />
       <InteractionManager />
       <ConnectionMarkers />
@@ -124,7 +128,7 @@ export default function MappedInMap({ mapId, children }: MappedInMapProps) {
         {children}
       </aside>
 
-      <nav className="col-[3/4] row-[2/3] overflow-y-auto">
+      <nav className="col-[2/3] row-[1/3] self-start justify-self-end relative z-10">
         <FloorSelector />
       </nav>
     </MapView>

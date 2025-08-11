@@ -1,10 +1,13 @@
 import {
-  Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
+  SelectGroup,
+  SelectLabel,
+  Select,
 } from '@/components/ui/select';
+import { Button } from './ui/button';
+import { ChevronsUpDown } from 'lucide-react';
+import { SelectTrigger } from '@radix-ui/react-select';
 
 interface MapSelectorProps {
   value?: string;
@@ -31,17 +34,27 @@ export default function MapSelector({ value, onSelect }: MapSelectorProps) {
     { label: 'Warehouse', mapId: '667b26b38298d5000b85eeb0' },
   ];
 
+  const mapLabel = mappedInDemos.find(({ mapId }) => mapId === value)?.label;
+
   return (
     <Select value={value} onValueChange={onSelect}>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Map" />
+      <SelectTrigger asChild>
+        <Button variant="secondary" className="w-full">
+          <span className="text-sm font-semibold grow text-left">
+            {mapLabel}
+          </span>
+          <ChevronsUpDown />
+        </Button>
       </SelectTrigger>
       <SelectContent>
-        {mappedInDemos.map(({ label, mapId }) => (
-          <SelectItem key={mapId} value={mapId}>
-            {label}
-          </SelectItem>
-        ))}
+        <SelectGroup>
+          <SelectLabel>Demo maps</SelectLabel>
+          {mappedInDemos.map(({ label, mapId }) => (
+            <SelectItem key={mapId} value={mapId}>
+              {label}
+            </SelectItem>
+          ))}
+        </SelectGroup>
       </SelectContent>
     </Select>
   );

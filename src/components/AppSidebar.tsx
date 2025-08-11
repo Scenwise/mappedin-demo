@@ -1,6 +1,7 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenuButton,
@@ -33,7 +34,7 @@ export default function AppSidebar() {
   const location = useLocation();
 
   return (
-    <Sidebar collapsible="icon" variant="floating">
+    <Sidebar collapsible="icon" variant="sidebar">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
@@ -53,6 +54,16 @@ export default function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter>
+        <h1
+          className="scroll-m-20 text-xl font-medium tracking-tight"
+          style={{ 'writing-mode': 'sideways-lr' }}
+        >
+          Scenwise
+          <span className="text-muted-foreground"> | MappedIn Demo</span>
+        </h1>
+      </SidebarFooter>
     </Sidebar>
   );
 }

@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import SpaceTreeCollapsible from '@/components/SpaceTreeCollapsible';
 import useClickNavigation from '@/composables/useClickNavigation';
+import { PageHeader } from '@/components/PageHeader';
 
 type TabOptions = 'spaces' | 'pois';
 
@@ -58,9 +59,7 @@ export default function Info() {
 
   return (
     <>
-      <div className="sticky top-0 bg-background z-10 py-2">
-        <h2 className="text-lg font-semibold">{mapData.mapName}</h2>
-      </div>
+      <PageHeader title="Info" />
 
       <div className="py-2">
         <Tabs value={tab} onValueChange={(e) => setTab(e as TabOptions)}>
