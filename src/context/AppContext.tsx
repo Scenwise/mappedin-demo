@@ -10,6 +10,8 @@ interface AppContext {
   setNavigationFrom: SetState<TNavigationTarget | undefined>;
   navigationTo: TNavigationTarget | undefined;
   setNavigationTo: SetState<TNavigationTarget | undefined>;
+  heatmapSpaceId: string | undefined;
+  setHeatmapSpaceId: SetState<string | undefined>;
 }
 
 export const AppContext = createContext<AppContext>({} as AppContext);

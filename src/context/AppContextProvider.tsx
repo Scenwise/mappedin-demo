@@ -12,6 +12,7 @@ export default function AppContextProvider({
   const [mapId, setMapId] = useState<string>('65c0ff7430b94e3fabd5bb8c');
   const [navigationFrom, setNavigationFrom] = useState<TNavigationTarget>();
   const [navigationTo, setNavigationTo] = useState<TNavigationTarget>();
+  const [heatmapSpaceId, setHeatmapSpaceId] = useState<string>();
 
   return (
     <AppContext.Provider
@@ -22,6 +23,8 @@ export default function AppContextProvider({
         setNavigationFrom,
         navigationTo,
         setNavigationTo,
+        heatmapSpaceId,
+        setHeatmapSpaceId,
       }}
     >
       {children}

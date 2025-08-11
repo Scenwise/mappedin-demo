@@ -77,7 +77,9 @@ export default function DemoCard({
         </CardAction>
       </CardHeader>
 
-      {enabled && children && <CardContent>{children}</CardContent>}
+      {enabled && children && (
+        <CardContent className="space-y-2">{children}</CardContent>
+      )}
     </Card>
   );
 }

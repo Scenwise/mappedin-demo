@@ -1,18 +1,23 @@
-import { useMap } from '@mappedin/react-sdk';
+import { useEvent, useMap } from '@mappedin/react-sdk';
 import DemoCard from './DemoCard';
 import type { TGeometryState } from '@mappedin/react-sdk/mappedin-js/src';
 import { interpolateColors } from '@/lib/interpolate-colors';
 import { perlinNoise1D } from '@/lib/noise';
 import { Button } from '@/components/ui/button';
-import { useEffect, useRef, useState } from 'react';
-import { Progress } from '../ui/progress';
-import { Pause, Play, RotateCcw } from 'lucide-react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { Progress } from '@/components/ui/progress';
+import { Info, Pause, Play, RotateCcw } from 'lucide-react';
+import { AppContext } from '@/context/AppContext';
+import { formatTime } from '@/lib/format-time';
+import { Separator } from '@/components/ui/separator';
 
 const COLOR1 = '#fff4e6';
 const COLOR2 = '#ff7c43';
 
 export default function StackedFloorsDemo() {
   const { mapData, mapView } = useMap();
+
+  const isEnabled = useRef(false);
 
   // Store default state per space
   const defaultStates = useRef<Record<string, TGeometryState>>({});
@@ -30,7 +35,12 @@ export default function StackedFloorsDemo() {
 
   const [timestamp, setTimestamp] = useState(13.5);
   function updateSpaceColors(enabled: boolean) {
-    if (!enabled) setIsPlaying(false);
+    isEnabled.current = enabled;
+
+    if (!enabled) {
+      setIsPlaying(false);
+      setHeatmapSpaceId(undefined);
+    }
 
     mapData.getByType('space').forEach((space) => {
       const color = enabled
@@ -67,11 +77,20 @@ export default function StackedFloorsDemo() {
     setIsPlaying(!isPlaying);
   };
 
+  // Handle click for heatmap widget
+  const { setHeatmapSpaceId } = useContext(AppContext);
+  useEvent('click', ({ spaces }) => {
+    if (isEnabled.current && spaces.length) {
+      setHeatmapSpaceId(spaces[0].id);
+    }
+  });
+
   return (
     <DemoCard
       title="Heatmap"
       description="Show a heatmap overlay on the map"
       onEnabled={updateSpaceColors}
+      defaultEnabled={isEnabled.current}
     >
       <Progress value={timestamp / 0.24} />
 
@@ -86,10 +105,21 @@ export default function StackedFloorsDemo() {
         </Button>
 
         <span className="text-xs text-muted-foreground">
-          {timestamp < 10 ? `0${Math.floor(timestamp)}` : Math.floor(timestamp)}
-          :{timestamp == Math.floor(timestamp) ? '00' : '30'}
+          {formatTime(timestamp)}
         </span>
       </div>
+
+      <Separator />
+
+      <p>
+        <Info
+          size="14"
+          className="inline align-middle mr-1 text-muted-foreground"
+        />
+        <i className="text-muted-foreground text-xs">
+          Click on a space to show its daycurve.
+        </i>
+      </p>
     </DemoCard>
   );
 }

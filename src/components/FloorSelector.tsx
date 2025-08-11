@@ -38,8 +38,10 @@ export default function FloorSelector() {
     setCurrentFloorId(payload.floor.id);
   });
 
+  if (floorStacks.length < 2 && (!floors || floors.length < 2)) return null;
+
   return (
-    <div className="flex gap-3 m-2 p-3 bg-white/70 backdrop-blur-3xl rounded-xl">
+    <div className="flex gap-3 p-3 bg-white/70 backdrop-blur-3xl rounded-xl">
       {floorStacks.length > 1 && (
         <div className="space-y-1">
           <Label>Building</Label>

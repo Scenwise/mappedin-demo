@@ -16,13 +16,15 @@ import {
 import { TypographyMuted } from './ui/typography/muted';
 import FloorSelector from './FloorSelector';
 import InteractionManager from './InteractionManager';
-import { cloneElement, type JSX } from 'react';
+import { cloneElement, useContext, type JSX } from 'react';
 import {
   stairsArrowUpRight,
   escalatorArrowUpRight,
   chevronsUpDownSquare,
 } from '@lucide/lab';
 import type { Connection } from '@mappedin/react-sdk/mappedin-js/src';
+import { AppContext } from '@/context/AppContext';
+import { HeatmapWidget } from './demo-widgets/HeatmapWidget';
 
 function MyCustomComponent() {
   const { mapData } = useMap();
@@ -98,6 +100,8 @@ export default function MappedInMap({ mapId, children }: MappedInMapProps) {
     mapId,
   });
 
+  const { heatmapSpaceId } = useContext(AppContext);
+
   const mapClassName =
     'w-full h-full bg-(--sidebar) rounded-2xl overflow-hidden col-[2/3] row-[1/3] ring ring-gray-100';
 
@@ -128,8 +132,10 @@ export default function MappedInMap({ mapId, children }: MappedInMapProps) {
         {children}
       </aside>
 
-      <nav className="col-[2/3] row-[1/3] self-start justify-self-end relative z-10">
+      <nav className="col-[2/3] row-[1/3] self-start justify-self-end relative z-10 p-2 overflox-y-auto space-y-4">
         <FloorSelector />
+
+        {heatmapSpaceId && <HeatmapWidget />}
       </nav>
     </MapView>
   ) : null;
