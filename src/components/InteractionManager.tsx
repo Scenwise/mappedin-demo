@@ -7,6 +7,8 @@ export default function InteractionManager() {
   // Make all spaces interactive to
   // have them detected in the click event
   useEffect(() => {
+    if (!mapView || !mapData) return;
+
     mapData
       .getByType('space')
       .filter(({ name }) => name?.length)

@@ -1,10 +1,4 @@
-import {
-  MapView,
-  useMapData,
-  useMap,
-  Label,
-  Marker,
-} from '@mappedin/react-sdk';
+import { MapView, useMapData, useMap, Marker } from '@mappedin/react-sdk';
 import {
   BusFront,
   DoorOpen,
@@ -16,7 +10,7 @@ import {
 import { TypographyMuted } from './ui/typography/muted';
 import FloorSelector from './FloorSelector';
 import InteractionManager from './InteractionManager';
-import { cloneElement, useContext, type JSX } from 'react';
+import { cloneElement, useContext, useEffect, type JSX } from 'react';
 import {
   stairsArrowUpRight,
   escalatorArrowUpRight,
@@ -27,33 +21,19 @@ import { AppContext } from '@/context/AppContext';
 import { HeatmapWidget } from './demo-widgets/HeatmapWidget';
 
 function MyCustomComponent() {
-  const { mapData } = useMap();
+  const { mapData, mapView } = useMap();
 
-  return [
-    ...mapData
-      .getByType('space')
-      .filter(({ name }) => name.length)
-      .map((space) => {
-        return (
-          <Label
-            key={space.id}
-            target={space.center}
-            text={space.name}
-            options={{ interactive: true }}
-          />
-        );
-      }),
-    ...mapData.getByType('point-of-interest').map((poi) => {
-      return (
-        <Label
-          key={poi.id}
-          target={poi.anchorTarget}
-          text={poi.name}
-          options={{ interactive: true }}
-        />
-      );
-    }),
-  ];
+  useEffect(() => {
+    if (mapData && mapView) {
+      async function initializeLabels() {
+        // Initialize labels for spaces and points of interest
+        mapView.Labels.all();
+      }
+      initializeLabels();
+    }
+  }, [mapData, mapView]);
+
+  return null;
 }
 
 function ConnectionMarkers() {

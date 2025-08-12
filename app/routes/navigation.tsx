@@ -17,10 +17,10 @@ export default function Navigation() {
       if (!directions) return;
 
       // Add a path from the first space to the second space.
-      mapView.Paths.removeAll();
-      mapView.Paths.add(directions.coordinates);
+      mapView.Navigation.clear();
+      mapView.Navigation.draw(directions);
     }
-  }, [navigationFrom, navigationTo, mapData, mapView.Paths]);
+  }, [navigationFrom, navigationTo, mapData, mapView.Navigation]);
 
   return (
     <>
