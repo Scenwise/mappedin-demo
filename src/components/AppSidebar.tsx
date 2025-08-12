@@ -58,7 +58,7 @@ export default function AppSidebar() {
       <SidebarFooter>
         <h1
           className="scroll-m-20 text-xl font-medium tracking-tight"
-          style={{ 'writing-mode': 'sideways-lr' }}
+          style={{ writingMode: 'sideways-lr' }}
         >
           Scenwise
           <span className="text-muted-foreground"> | MappedIn Demo</span>
