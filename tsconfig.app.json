@@ -28,7 +28,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./src/*"
+        "app/*"
       ]
     },
     /* React Router */
@@ -38,8 +38,7 @@
     ]
   },
   "include": [
-    "src",
+    "app",
     ".react-router/types/**/*" /* React Router */,
-    "app"
   ]
 }

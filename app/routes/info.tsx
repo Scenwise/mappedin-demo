@@ -16,7 +16,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import SpaceTreeCollapsible from '@/components/SpaceTreeCollapsible';
-import useClickNavigation from '@/composables/useClickNavigation';
+import useClickNavigation from '@/hooks/use-click-navigation';
 import { PageHeader } from '@/components/PageHeader';
 
 type TabOptions = 'spaces' | 'pois';
