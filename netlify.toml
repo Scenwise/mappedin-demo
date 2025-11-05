@@ -1,6 +1,6 @@
 [build]
   command = "yarn react-router build"
-  publish = "build"
+  publish = "build/client"
 
 [[redirects]]
   from = "/*"
