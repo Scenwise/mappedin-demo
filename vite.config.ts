@@ -12,4 +12,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./app"),
     },
   },
+  build: {
+    outDir: 'dist', // 👈 this is the build folder
+  }
 })
