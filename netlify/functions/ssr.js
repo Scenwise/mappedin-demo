@@ -3,7 +3,7 @@ import { createRequestHandler } from "react-router";
 import { fileURLToPath } from "url";
 
 // path to your server build
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const build = await import(path.join(__dirname, "../../build/server/index.js"));
+const { createRequestHandler } = require("react-router");
+const build = require("./server.cjs");
 
-export const handler = createRequestHandler(build);
+exports.handler = createRequestHandler(build);
