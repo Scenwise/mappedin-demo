@@ -1,4 +1,4 @@
 const build = require("./server.cjs");
 
-exports.handler = build.default;
+exports.handler = build.ssr;
 
