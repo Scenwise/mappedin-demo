@@ -3,6 +3,7 @@ services:
     name: mappedin-demo
     env: node
     region: frankfurt
-    buildCommand: yarn build
+    buildCommand: yarn install --frozen-lockfile && yarn build
     startCommand: yarn start
     plan: free
+

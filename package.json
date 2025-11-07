@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "react-router dev",
-    "build": "react-router build",
-    "start": "node server/server.js",
-    "typecheck": "react-router typegen && tsc",
+    "dev": "node node_modules/@react-router/dev/cli.js dev",
+  "build": "node node_modules/@react-router/dev/cli.js build",
+  "start": "node server/server.js",
+  "typecheck": "node node_modules/@react-router/dev/cli.js typegen && tsc",
     "lint": "eslint ."
   },
   "dependencies": {
