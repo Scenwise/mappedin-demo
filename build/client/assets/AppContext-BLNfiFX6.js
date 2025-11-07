@@ -1,1 +1,0 @@
-import{a as t}from"./chunk-C37GKA54-Cea7C6Y9.js";function o(r){const e=t.useRef({value:r,previous:r});return t.useMemo(()=>(e.current.value!==r&&(e.current.previous=e.current.value,e.current.value=r),e.current.previous),[r])}const n=t.createContext({});export{n as A,o as u};

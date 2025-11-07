@@ -1,4 +1,4 @@
-import { useEvent, useMap } from '@mappedin/react-sdk';
+import { useMapViewEvent, useMap } from '@mappedin/react-sdk';
 import DemoCard from './DemoCard';
 import type { TGeometryState } from '@mappedin/react-sdk/mappedin-js/src';
 import { interpolateColors } from '@/lib/interpolate-colors';
@@ -79,7 +79,7 @@ export default function StackedFloorsDemo() {
 
   // Handle click for heatmap widget
   const { setHeatmapSpaceId } = useContext(AppContext);
-  useEvent('click', ({ spaces }) => {
+  useMapViewEvent('click', ({ spaces }) => {
     if (isEnabled.current && spaces.length) {
       setHeatmapSpaceId(spaces[0].id);
     }

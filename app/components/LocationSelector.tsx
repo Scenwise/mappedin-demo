@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useEvent, useMap } from '@mappedin/react-sdk';
+import { useMapViewEvent, useMap } from '@mappedin/react-sdk';
 import type { TNavigationTarget } from '@mappedin/react-sdk/mappedin-js/src/types';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -60,7 +60,7 @@ export default function LocationSelector({
   }
 
   const [clickSelectEnabled, setClickSelectEnabled] = useState(false);
-  useEvent('click', ({ spaces, coordinate }) => {
+  useMapViewEvent('click', ({ spaces, coordinate }) => {
     if (clickSelectEnabled) {
       if (spaces.length) {
         handleSpaceSelect(spaces[0].id);
