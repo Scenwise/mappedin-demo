@@ -1,7 +1,0 @@
-{
-  "buildCommand": "yarn react-router build",
-  "outputDirectory": "build/client",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api/rr" }
-  ]
-}

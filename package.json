@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "react-router dev",
-    "build": "react-router build && node scripts/copy-ssr.js",
-    "start": "react-router-serve ./build/server/index.js",
+    "build": "react-router build",
+    "start": "node server/server.js",
     "typecheck": "react-router typegen && tsc",
     "lint": "eslint ."
   },
