@@ -1,0 +1,12 @@
+{
+  "buildCommand": "yarn react-router build",
+  "outputDirectory": "build/client",
+  "functions": {
+    "api/rr.js": {
+      "runtime": "edge"
+    }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/rr" }
+  ]
+}
