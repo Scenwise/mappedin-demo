@@ -1,4 +1,5 @@
 const build = require("./server.cjs");
 
-exports.handler = build.ssr.handler;
+// React Router SSR entry handler
+exports.handler = build.entry.module.default;
 
