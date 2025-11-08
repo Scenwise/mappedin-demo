@@ -1,0 +1,1 @@
+import{p as n}from"./chunk-UIGDSWPH-74DChMva.js";function s(e){const r="Scenwise MappedIn Demo";return e?`${e} | ${r}`:r}function i({title:e}){return n.jsxs(n.Fragment,{children:[n.jsx("title",{children:s(e)}),n.jsx("div",{className:"sticky top-0 bg-background z-10 py-2",children:n.jsx("h2",{className:"text-lg font-semibold",children:e})})]})}export{i as P};
