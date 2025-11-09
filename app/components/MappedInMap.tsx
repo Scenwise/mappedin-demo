@@ -1,4 +1,5 @@
-import { MapView, useMapData, useMap, Marker } from '@mappedin/react-sdk';
+import * as mappedin from '@mappedin/react-sdk';
+const { MapView, useMapData, useMap, Marker } = mappedin;
 import {
   BusFront,
   DoorOpen,
