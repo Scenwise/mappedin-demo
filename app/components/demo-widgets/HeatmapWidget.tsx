@@ -19,7 +19,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useMap } from '@mappedin/react-sdk';
+import * as mappedin from '@mappedin/react-sdk';
+const { useMap } = mappedin;
 import { Button } from '../ui/button';
 import { X } from 'lucide-react';
 

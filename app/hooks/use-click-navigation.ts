@@ -1,4 +1,5 @@
-import { useEvent } from '@mappedin/react-sdk';
+import * as mappedin from '@mappedin/react-sdk';
+const { useEvent } = mappedin;
 import { useNavigate } from 'react-router';
 
 // Navigate to the space when clicked

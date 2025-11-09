@@ -1,4 +1,5 @@
-import { useMap } from '@mappedin/react-sdk';
+import * as mappedin from '@mappedin/react-sdk';
+const { useMap } = mappedin;
 import { useState } from 'react';
 import {
   Select,
