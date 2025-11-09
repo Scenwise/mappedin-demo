@@ -7,7 +7,7 @@ import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import * as React from "react";
 import { useState, useEffect, createContext, useContext, cloneElement, useRef } from "react";
-import { useMap, useMapData, MapView, Marker, useEvent } from "@mappedin/react-sdk";
+import mappedin, { useMap as useMap$1, useEvent } from "@mappedin/react-sdk";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, X, LoaderCircle, BusFront, ShieldUser, TriangleRight, Icon, DoorOpen, XIcon, Info, Navigation, Settings2, ChevronsUpDown, ChevronRight, Trees, Building, ArrowLeft, Layers, ExternalLink, LocateOff, Locate, Pause, RotateCcw, Play } from "lucide-react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { SelectTrigger as SelectTrigger$1 } from "@radix-ui/react-select";
@@ -298,7 +298,7 @@ function Label({
   );
 }
 function FloorSelector() {
-  const { mapData, mapView } = useMap();
+  const { mapData, mapView } = useMap$1();
   const [currentFloorStackId, setCurrentFloorStackId] = useState(
     mapView.currentFloorStack.id
   );
@@ -343,7 +343,7 @@ function FloorSelector() {
   ] });
 }
 function InteractionManager() {
-  const { mapView, mapData } = useMap();
+  const { mapView, mapData } = useMap$1();
   useEffect(() => {
     if (!mapView || !mapData) return;
     mapData.getByType("space").filter(({ name }) => name?.length).forEach((space2) => {
@@ -667,7 +667,7 @@ function Button({
 }
 function HeatmapWidget() {
   const { heatmapSpaceId, setHeatmapSpaceId } = useContext(AppContext);
-  const { mapData } = useMap();
+  const { mapData } = useMap$1();
   const space2 = mapData.getById("space", heatmapSpaceId);
   if (!space2) return null;
   const chartData = Array.from({ length: 24 }, (_, i) => ({
@@ -719,6 +719,7 @@ function HeatmapWidget() {
     ] }) }) })
   ] });
 }
+const { MapView, useMapData, useMap, Marker } = mappedin;
 function MyCustomComponent() {
   const { mapData, mapView } = useMap();
   useEffect(() => {
@@ -1605,7 +1606,7 @@ function PageHeader({ title }) {
 const info = UNSAFE_withComponentProps(function Info2() {
   const {
     mapData
-  } = useMap();
+  } = useMap$1();
   useClickNavigation();
   const floors = mapData.getByType("floor").sort((a, b) => a.elevation - b.elevation);
   const floorStacks = mapData.getByType("floor-stack");
@@ -1697,7 +1698,7 @@ function SpacesTree({
 }) {
   const {
     mapView
-  } = useMap();
+  } = useMap$1();
   const navigate = useNavigate();
   function focusOnSpace(space2) {
     mapView.setFloor(space2.floor.id);
@@ -1761,7 +1762,7 @@ const space = UNSAFE_withComponentProps(function Space({
 }) {
   const {
     mapData
-  } = useMap();
+  } = useMap$1();
   useClickNavigation();
   const space2 = mapData.getById("space", params.id);
   if (!space2) {
@@ -1844,7 +1845,7 @@ function LocationSelector({
   location,
   onLocationSelect
 }) {
-  const { mapData } = useMap();
+  const { mapData } = useMap$1();
   const floors = mapData.getByType("floor").sort((a, b) => a.elevation - b.elevation);
   const spaces = mapData.getByType("space").filter(({ name }) => name.length);
   const spacesPerFloor = floors.map((floor) => ({
@@ -1903,7 +1904,7 @@ const navigation = UNSAFE_withComponentProps(function Navigation2() {
   const {
     mapData,
     mapView
-  } = useMap();
+  } = useMap$1();
   const {
     navigationFrom,
     setNavigationFrom,
@@ -2044,7 +2045,7 @@ function Progress({
 const COLOR1 = "#fff4e6";
 const COLOR2 = "#ff7c43";
 function StackedFloorsDemo$1() {
-  const { mapData, mapView } = useMap();
+  const { mapData, mapView } = useMap$1();
   const isEnabled = useRef(false);
   const defaultStates = useRef({});
   useEffect(() => {
@@ -2134,7 +2135,7 @@ function StackedFloorsDemo$1() {
   );
 }
 function StackedFloorsDemo() {
-  const { mapData, mapView } = useMap();
+  const { mapData, mapView } = useMap$1();
   function onEnabled(enabled) {
     if (!mapView) return;
     if (enabled) {
@@ -2169,7 +2170,7 @@ const route5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: demos
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-RZi-ff8t.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-BP1L8zXC.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/root-DKwwea1t.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-BP1L8zXC.js"], "css": ["/assets/root-DAtXX4TS.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/layout": { "id": "routes/layout", "parentId": "root", "path": void 0, "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/layout-CPg3aQ59.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-Dyrw9_Ds.js", "/assets/select-CIYBTZ0-.js", "/assets/tooltip-CK8XbFMn.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/card-X38P6VTA.js", "/assets/button-ugrZpFSk.js", "/assets/sidebar-CjJhqf_K.js", "/assets/index-BP1L8zXC.js", "/assets/Combination-I0fiGIfk.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/info": { "id": "routes/info", "parentId": "routes/layout", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/info-CUkXN5UG.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-Dyrw9_Ds.js", "/assets/sidebar-CjJhqf_K.js", "/assets/tooltip-CK8XbFMn.js", "/assets/Combination-I0fiGIfk.js", "/assets/use-click-navigation-D1AGAejk.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/space": { "id": "routes/space", "parentId": "routes/layout", "path": "/space/:id", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/space-BbrrJguH.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-Dyrw9_Ds.js", "/assets/button-ugrZpFSk.js", "/assets/use-click-navigation-D1AGAejk.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/navigation": { "id": "routes/navigation", "parentId": "routes/layout", "path": "/navigation", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/navigation-C9EnjoDW.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/select-CIYBTZ0-.js", "/assets/index-Dyrw9_Ds.js", "/assets/button-ugrZpFSk.js", "/assets/tooltip-CK8XbFMn.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/index-BP1L8zXC.js", "/assets/Combination-I0fiGIfk.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/demos": { "id": "routes/demos", "parentId": "routes/layout", "path": "/demos", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/demos-DQe-AICi.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-Dyrw9_Ds.js", "/assets/card-X38P6VTA.js", "/assets/tooltip-CK8XbFMn.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/button-ugrZpFSk.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-75997a5d.js", "version": "75997a5d", "sri": void 0 };
+const serverManifest = { "entry": { "module": "/assets/entry.client-RZi-ff8t.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-BP1L8zXC.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/root-DKwwea1t.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-BP1L8zXC.js"], "css": ["/assets/root-DAtXX4TS.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/layout": { "id": "routes/layout", "parentId": "root", "path": void 0, "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/layout-CyrebUHB.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-NvlfwhVJ.js", "/assets/select-DPedU_vd.js", "/assets/tooltip-DTD4heW1.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/card-Dmz9KFOl.js", "/assets/button-CmjlCAgD.js", "/assets/sidebar-CNT1SC-K.js", "/assets/index-BP1L8zXC.js", "/assets/Combination-DDnm74og.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/info": { "id": "routes/info", "parentId": "routes/layout", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/info-CckDI1Sm.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-NvlfwhVJ.js", "/assets/sidebar-CNT1SC-K.js", "/assets/tooltip-DTD4heW1.js", "/assets/Combination-DDnm74og.js", "/assets/use-click-navigation-CSL4R4ZT.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/space": { "id": "routes/space", "parentId": "routes/layout", "path": "/space/:id", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/space-CjnhRLN3.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-NvlfwhVJ.js", "/assets/button-CmjlCAgD.js", "/assets/use-click-navigation-CSL4R4ZT.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/navigation": { "id": "routes/navigation", "parentId": "routes/layout", "path": "/navigation", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/navigation-vqe-mRNE.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/select-DPedU_vd.js", "/assets/index-NvlfwhVJ.js", "/assets/button-CmjlCAgD.js", "/assets/tooltip-DTD4heW1.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/index-BP1L8zXC.js", "/assets/Combination-DDnm74og.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/demos": { "id": "routes/demos", "parentId": "routes/layout", "path": "/demos", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/demos-C33xuIki.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-NvlfwhVJ.js", "/assets/card-Dmz9KFOl.js", "/assets/tooltip-DTD4heW1.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/button-CmjlCAgD.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-26f07914.js", "version": "26f07914", "sri": void 0 };
 const assetsBuildDirectory = "build/client";
 const basename = "/";
 const future = { "v8_middleware": false, "unstable_optimizeDeps": false, "unstable_splitRouteModules": false, "unstable_subResourceIntegrity": false, "unstable_viteEnvironmentApi": false };
