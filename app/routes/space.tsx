@@ -1,4 +1,5 @@
-import { useMap } from '@mappedin/react-sdk';
+import * as mappedin from '@mappedin/react-sdk';
+const { useMap } = mappedin;
 import type { Route } from './+types/space';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';

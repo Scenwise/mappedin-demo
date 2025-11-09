@@ -1,7 +1,8 @@
 import LocationSelector from '@/components/LocationSelector';
 import { PageHeader } from '@/components/PageHeader';
 import { AppContext } from '@/context/AppContext';
-import { useMap } from '@mappedin/react-sdk';
+import * as mappedin from '@mappedin/react-sdk';
+const { useMap } = mappedin;
 import { useContext, useEffect } from 'react';
 
 export default function Navigation() {

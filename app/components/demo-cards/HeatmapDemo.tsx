@@ -1,4 +1,5 @@
-import { useEvent, useMap } from '@mappedin/react-sdk';
+import * as mappedin from '@mappedin/react-sdk';
+const { useEvent, useMap } = mappedin;
 import DemoCard from './DemoCard';
 import type { TGeometryState } from '@mappedin/react-sdk/mappedin-js/src';
 import { interpolateColors } from '@/lib/interpolate-colors';

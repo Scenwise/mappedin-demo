@@ -7,7 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useEvent, useMap } from '@mappedin/react-sdk';
+import * as mappedin from '@mappedin/react-sdk';
+const { useEvent, useMap } = mappedin;
 import type { TNavigationTarget } from '@mappedin/react-sdk/mappedin-js/src/types';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
