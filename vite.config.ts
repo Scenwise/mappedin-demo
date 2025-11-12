@@ -13,4 +13,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./app"),
     },
   },
+  ssr: {
+    // Keep this SDK out of the Node build
+    external: ["@mappedin/react-sdk"],
+  }
 })

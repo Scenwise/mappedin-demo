@@ -7,16 +7,20 @@ import AppSidebar from '@/components/AppSidebar';
 import { AppContext } from '@/context/AppContext';
 import AppContextProvider from '@/context/AppContextProvider';
 import MapSelector from '@/components/MapSelector';
+import { ClientOnly } from '@/ClientOnly';
 
 export default function Layout() {
   return (
-    <AppContextProvider>
+    <ClientOnly>
+      <AppContextProvider>
       <SidebarProvider defaultOpen={false} className="max-h-svh">
         <AppSidebar />
 
         <Main />
       </SidebarProvider>
     </AppContextProvider>
+    </ClientOnly>
+    
   );
 }
 
@@ -28,10 +32,12 @@ function Main() {
       <div className="col-[1/2] row-[1/3]">
         <MapSelector value={mapId} onSelect={setMapId} />
       </div>
-
-      <MappedInMap mapId={mapId} key={mapId}>
+      <ClientOnly>
+        <MappedInMap mapId={mapId} key={mapId}>
         <Outlet />
       </MappedInMap>
+      </ClientOnly>
+      
     </main>
   );
 }

@@ -7,7 +7,7 @@ import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import * as React from "react";
 import { useState, useEffect, createContext, useContext, cloneElement, useRef } from "react";
-import mappedin, { useMap as useMap$1, useEvent } from "@mappedin/react-sdk";
+import * as mappedin from "@mappedin/react-sdk";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, X, LoaderCircle, BusFront, ShieldUser, TriangleRight, Icon, DoorOpen, XIcon, Info, Navigation, Settings2, ChevronsUpDown, ChevronRight, Trees, Building, ArrowLeft, Layers, ExternalLink, LocateOff, Locate, Pause, RotateCcw, Play } from "lucide-react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { SelectTrigger as SelectTrigger$1 } from "@radix-ui/react-select";
@@ -297,8 +297,9 @@ function Label({
     }
   );
 }
+const { useMap: useMap$9 } = mappedin;
 function FloorSelector() {
-  const { mapData, mapView } = useMap$1();
+  const { mapData, mapView } = useMap$9();
   const [currentFloorStackId, setCurrentFloorStackId] = useState(
     mapView.currentFloorStack.id
   );
@@ -342,8 +343,9 @@ function FloorSelector() {
     ] })
   ] });
 }
+const { useMap: useMap$8 } = mappedin;
 function InteractionManager() {
-  const { mapView, mapData } = useMap$1();
+  const { mapView, mapData } = useMap$8();
   useEffect(() => {
     if (!mapView || !mapData) return;
     mapData.getByType("space").filter(({ name }) => name?.length).forEach((space2) => {
@@ -665,9 +667,10 @@ function Button({
     }
   );
 }
+const { useMap: useMap$7 } = mappedin;
 function HeatmapWidget() {
   const { heatmapSpaceId, setHeatmapSpaceId } = useContext(AppContext);
-  const { mapData } = useMap$1();
+  const { mapData } = useMap$7();
   const space2 = mapData.getById("space", heatmapSpaceId);
   if (!space2) return null;
   const chartData = Array.from({ length: 24 }, (_, i) => ({
@@ -719,9 +722,14 @@ function HeatmapWidget() {
     ] }) }) })
   ] });
 }
-const { MapView, useMapData, useMap, Marker } = mappedin;
+function ClientOnly({ children }) {
+  const [isClient, setIsClient] = useState(typeof window !== "undefined");
+  useEffect(() => setIsClient(true), []);
+  return isClient ? /* @__PURE__ */ jsx(Fragment, { children }) : null;
+}
+const { MapView, useMapData, useMap: useMap$6, Marker } = mappedin;
 function MyCustomComponent() {
-  const { mapData, mapView } = useMap();
+  const { mapData, mapView } = useMap$6();
   useEffect(() => {
     if (mapData && mapView) {
       async function initializeLabels() {
@@ -733,7 +741,7 @@ function MyCustomComponent() {
   return null;
 }
 function ConnectionMarkers() {
-  const { mapData } = useMap();
+  const { mapData } = useMap$6();
   const connections = mapData.getByType("connection");
   const connectionIcons = {
     door: /* @__PURE__ */ jsx(DoorOpen, {}),
@@ -779,12 +787,12 @@ function MappedInMap({ mapId, children }) {
   }
   return mapData ? /* @__PURE__ */ jsxs(MapView, { mapData, className: mapClassName, children: [
     /* @__PURE__ */ jsx(MyCustomComponent, {}),
-    /* @__PURE__ */ jsx(InteractionManager, {}),
+    /* @__PURE__ */ jsx(ClientOnly, { children: /* @__PURE__ */ jsx(InteractionManager, {}) }),
     /* @__PURE__ */ jsx(ConnectionMarkers, {}),
     /* @__PURE__ */ jsx("aside", { className: "col-[1/2] row-[2/3] overflow-y-auto overflow-x-hidden", children }),
     /* @__PURE__ */ jsxs("nav", { className: "col-[2/3] row-[1/3] self-start justify-self-end relative z-10 p-2 overflox-y-auto space-y-4", children: [
-      /* @__PURE__ */ jsx(FloorSelector, {}),
-      heatmapSpaceId && /* @__PURE__ */ jsx(HeatmapWidget, {})
+      /* @__PURE__ */ jsx(ClientOnly, { children: /* @__PURE__ */ jsx(FloorSelector, {}) }),
+      heatmapSpaceId && /* @__PURE__ */ jsx(ClientOnly, { children: /* @__PURE__ */ jsx(HeatmapWidget, {}) })
     ] })
   ] }) : null;
 }
@@ -1406,7 +1414,7 @@ function AppContextProvider({
   const [navigationFrom, setNavigationFrom] = useState();
   const [navigationTo, setNavigationTo] = useState();
   const [heatmapSpaceId, setHeatmapSpaceId] = useState();
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsx(ClientOnly, { children: /* @__PURE__ */ jsx(
     AppContext.Provider,
     {
       value: {
@@ -1421,7 +1429,7 @@ function AppContextProvider({
       },
       children
     }
-  );
+  ) });
 }
 function MapSelector({ value, onSelect }) {
   const mappedInDemos = [
@@ -1455,11 +1463,13 @@ function MapSelector({ value, onSelect }) {
   ] });
 }
 const layout = UNSAFE_withComponentProps(function Layout2() {
-  return /* @__PURE__ */ jsx(AppContextProvider, {
-    children: /* @__PURE__ */ jsxs(SidebarProvider, {
-      defaultOpen: false,
-      className: "max-h-svh",
-      children: [/* @__PURE__ */ jsx(AppSidebar, {}), /* @__PURE__ */ jsx(Main, {})]
+  return /* @__PURE__ */ jsx(ClientOnly, {
+    children: /* @__PURE__ */ jsx(AppContextProvider, {
+      children: /* @__PURE__ */ jsxs(SidebarProvider, {
+        defaultOpen: false,
+        className: "max-h-svh",
+        children: [/* @__PURE__ */ jsx(AppSidebar, {}), /* @__PURE__ */ jsx(Main, {})]
+      })
     })
   });
 });
@@ -1476,10 +1486,12 @@ function Main() {
         value: mapId,
         onSelect: setMapId
       })
-    }), /* @__PURE__ */ jsx(MappedInMap, {
-      mapId,
-      children: /* @__PURE__ */ jsx(Outlet, {})
-    }, mapId)]
+    }), /* @__PURE__ */ jsx(ClientOnly, {
+      children: /* @__PURE__ */ jsx(MappedInMap, {
+        mapId,
+        children: /* @__PURE__ */ jsx(Outlet, {})
+      }, mapId)
+    })]
   });
 }
 const route1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
@@ -1586,9 +1598,10 @@ function SpaceTreeCollapsible({
     }
   );
 }
+const { useEvent: useEvent$2 } = mappedin;
 function useClickNavigation() {
   const navigate = useNavigate();
-  useEvent("click", ({ spaces }) => {
+  useEvent$2("click", ({ spaces }) => {
     if (spaces.length) navigate(`/space/${spaces[0].id}`);
   });
 }
@@ -1603,10 +1616,13 @@ function PageHeader({ title }) {
     /* @__PURE__ */ jsx("div", { className: "sticky top-0 bg-background z-10 py-2", children: /* @__PURE__ */ jsx("h2", { className: "text-lg font-semibold", children: title }) })
   ] });
 }
+const {
+  useMap: useMap$5
+} = mappedin;
 const info = UNSAFE_withComponentProps(function Info2() {
   const {
     mapData
-  } = useMap$1();
+  } = useMap$5();
   useClickNavigation();
   const floors = mapData.getByType("floor").sort((a, b) => a.elevation - b.elevation);
   const floorStacks = mapData.getByType("floor-stack");
@@ -1698,7 +1714,7 @@ function SpacesTree({
 }) {
   const {
     mapView
-  } = useMap$1();
+  } = useMap$5();
   const navigate = useNavigate();
   function focusOnSpace(space2) {
     mapView.setFloor(space2.floor.id);
@@ -1757,12 +1773,15 @@ function Badge({
     }
   );
 }
+const {
+  useMap: useMap$4
+} = mappedin;
 const space = UNSAFE_withComponentProps(function Space({
   params
 }) {
   const {
     mapData
-  } = useMap$1();
+  } = useMap$4();
   useClickNavigation();
   const space2 = mapData.getById("space", params.id);
   if (!space2) {
@@ -1841,11 +1860,12 @@ const route3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: space
 }, Symbol.toStringTag, { value: "Module" }));
+const { useEvent: useEvent$1, useMap: useMap$3 } = mappedin;
 function LocationSelector({
   location,
   onLocationSelect
 }) {
-  const { mapData } = useMap$1();
+  const { mapData } = useMap$3();
   const floors = mapData.getByType("floor").sort((a, b) => a.elevation - b.elevation);
   const spaces = mapData.getByType("space").filter(({ name }) => name.length);
   const spacesPerFloor = floors.map((floor) => ({
@@ -1865,7 +1885,7 @@ function LocationSelector({
     if (space2) onLocationSelect(space2);
   }
   const [clickSelectEnabled, setClickSelectEnabled] = useState(false);
-  useEvent("click", ({ spaces: spaces2, coordinate: coordinate2 }) => {
+  useEvent$1("click", ({ spaces: spaces2, coordinate: coordinate2 }) => {
     if (clickSelectEnabled) {
       if (spaces2.length) {
         handleSpaceSelect(spaces2[0].id);
@@ -1900,11 +1920,14 @@ function LocationSelector({
     ] })
   ] });
 }
+const {
+  useMap: useMap$2
+} = mappedin;
 const navigation = UNSAFE_withComponentProps(function Navigation2() {
   const {
     mapData,
     mapView
-  } = useMap$1();
+  } = useMap$2();
   const {
     navigationFrom,
     setNavigationFrom,
@@ -1924,12 +1947,16 @@ const navigation = UNSAFE_withComponentProps(function Navigation2() {
       title: "Navigation"
     }), /* @__PURE__ */ jsxs("div", {
       className: "space-y-2 py-2",
-      children: [/* @__PURE__ */ jsx(LocationSelector, {
-        location: navigationFrom,
-        onLocationSelect: setNavigationFrom
-      }), /* @__PURE__ */ jsx(LocationSelector, {
-        location: navigationTo,
-        onLocationSelect: setNavigationTo
+      children: [/* @__PURE__ */ jsx(ClientOnly, {
+        children: /* @__PURE__ */ jsx(LocationSelector, {
+          location: navigationFrom,
+          onLocationSelect: setNavigationFrom
+        })
+      }), /* @__PURE__ */ jsx(ClientOnly, {
+        children: /* @__PURE__ */ jsx(LocationSelector, {
+          location: navigationTo,
+          onLocationSelect: setNavigationTo
+        })
       })]
     })]
   });
@@ -2042,6 +2069,7 @@ function Progress({
     }
   );
 }
+const { useEvent, useMap: useMap$1 } = mappedin;
 const COLOR1 = "#fff4e6";
 const COLOR2 = "#ff7c43";
 function StackedFloorsDemo$1() {
@@ -2134,8 +2162,9 @@ function StackedFloorsDemo$1() {
     }
   );
 }
+const { useMap } = mappedin;
 function StackedFloorsDemo() {
-  const { mapData, mapView } = useMap$1();
+  const { mapData, mapView } = useMap();
   function onEnabled(enabled) {
     if (!mapView) return;
     if (enabled) {
@@ -2160,9 +2189,11 @@ const demos = UNSAFE_withComponentProps(function Demos() {
   return /* @__PURE__ */ jsxs(Fragment, {
     children: [/* @__PURE__ */ jsx(PageHeader, {
       title: "Demos"
-    }), /* @__PURE__ */ jsxs("div", {
+    }), /* @__PURE__ */ jsx("div", {
       className: "space-y-2",
-      children: [/* @__PURE__ */ jsx(StackedFloorsDemo, {}), /* @__PURE__ */ jsx(StackedFloorsDemo$1, {})]
+      children: /* @__PURE__ */ jsxs(ClientOnly, {
+        children: [/* @__PURE__ */ jsx(StackedFloorsDemo, {}), /* @__PURE__ */ jsx(StackedFloorsDemo$1, {})]
+      })
     })]
   });
 });
@@ -2170,7 +2201,7 @@ const route5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: demos
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-RZi-ff8t.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-BP1L8zXC.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/root-DKwwea1t.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-BP1L8zXC.js"], "css": ["/assets/root-DAtXX4TS.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/layout": { "id": "routes/layout", "parentId": "root", "path": void 0, "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/layout-CyrebUHB.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-NvlfwhVJ.js", "/assets/select-DPedU_vd.js", "/assets/tooltip-DTD4heW1.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/card-Dmz9KFOl.js", "/assets/button-CmjlCAgD.js", "/assets/sidebar-CNT1SC-K.js", "/assets/index-BP1L8zXC.js", "/assets/Combination-DDnm74og.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/info": { "id": "routes/info", "parentId": "routes/layout", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/info-CckDI1Sm.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-NvlfwhVJ.js", "/assets/sidebar-CNT1SC-K.js", "/assets/tooltip-DTD4heW1.js", "/assets/Combination-DDnm74og.js", "/assets/use-click-navigation-CSL4R4ZT.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/space": { "id": "routes/space", "parentId": "routes/layout", "path": "/space/:id", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/space-CjnhRLN3.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-NvlfwhVJ.js", "/assets/button-CmjlCAgD.js", "/assets/use-click-navigation-CSL4R4ZT.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/navigation": { "id": "routes/navigation", "parentId": "routes/layout", "path": "/navigation", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/navigation-vqe-mRNE.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/select-DPedU_vd.js", "/assets/index-NvlfwhVJ.js", "/assets/button-CmjlCAgD.js", "/assets/tooltip-DTD4heW1.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/index-BP1L8zXC.js", "/assets/Combination-DDnm74og.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/demos": { "id": "routes/demos", "parentId": "routes/layout", "path": "/demos", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/demos-C33xuIki.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-NvlfwhVJ.js", "/assets/card-Dmz9KFOl.js", "/assets/tooltip-DTD4heW1.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/button-CmjlCAgD.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-26f07914.js", "version": "26f07914", "sri": void 0 };
+const serverManifest = { "entry": { "module": "/assets/entry.client-RZi-ff8t.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-BP1L8zXC.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/root-DKwwea1t.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-BP1L8zXC.js"], "css": ["/assets/root-DAtXX4TS.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/layout": { "id": "routes/layout", "parentId": "root", "path": void 0, "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/layout-D5isgiV-.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-LQx0N5oG.js", "/assets/select-CX23fl6z.js", "/assets/tooltip-BicAPSV1.js", "/assets/ClientOnly-Do3zMAaF.js", "/assets/card-NGpA5C1B.js", "/assets/button-BQnWc8Z8.js", "/assets/sidebar-DUZrABxk.js", "/assets/index-BP1L8zXC.js", "/assets/Combination-BM3GwNwT.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/info": { "id": "routes/info", "parentId": "routes/layout", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/info-B2wGv5Lv.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-LQx0N5oG.js", "/assets/sidebar-DUZrABxk.js", "/assets/tooltip-BicAPSV1.js", "/assets/Combination-BM3GwNwT.js", "/assets/use-click-navigation-C8qDvtLp.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/space": { "id": "routes/space", "parentId": "routes/layout", "path": "/space/:id", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/space-wwbBgkgW.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-LQx0N5oG.js", "/assets/button-BQnWc8Z8.js", "/assets/use-click-navigation-C8qDvtLp.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/navigation": { "id": "routes/navigation", "parentId": "routes/layout", "path": "/navigation", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/navigation-jD4op0U5.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/ClientOnly-Do3zMAaF.js", "/assets/select-CX23fl6z.js", "/assets/index-LQx0N5oG.js", "/assets/button-BQnWc8Z8.js", "/assets/tooltip-BicAPSV1.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/index-BP1L8zXC.js", "/assets/Combination-BM3GwNwT.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/demos": { "id": "routes/demos", "parentId": "routes/layout", "path": "/demos", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/demos-hD9mr1LW.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/ClientOnly-Do3zMAaF.js", "/assets/index-LQx0N5oG.js", "/assets/card-NGpA5C1B.js", "/assets/tooltip-BicAPSV1.js", "/assets/button-BQnWc8Z8.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-0d4d93cc.js", "version": "0d4d93cc", "sri": void 0 };
 const assetsBuildDirectory = "build/client";
 const basename = "/";
 const future = { "v8_middleware": false, "unstable_optimizeDeps": false, "unstable_splitRouteModules": false, "unstable_subResourceIntegrity": false, "unstable_viteEnvironmentApi": false };

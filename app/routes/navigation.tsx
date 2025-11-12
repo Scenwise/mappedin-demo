@@ -1,3 +1,4 @@
+import { ClientOnly } from '@/ClientOnly';
 import LocationSelector from '@/components/LocationSelector';
 import { PageHeader } from '@/components/PageHeader';
 import { AppContext } from '@/context/AppContext';
@@ -28,14 +29,19 @@ export default function Navigation() {
       <PageHeader title="Navigation" />
 
       <div className="space-y-2 py-2">
-        <LocationSelector
+        <ClientOnly>
+          <LocationSelector
           location={navigationFrom}
           onLocationSelect={setNavigationFrom}
         />
-        <LocationSelector
+        </ClientOnly>
+        <ClientOnly>
+          <LocationSelector
           location={navigationTo}
           onLocationSelect={setNavigationTo}
         />
+        </ClientOnly>
+        
       </div>
     </>
   );
