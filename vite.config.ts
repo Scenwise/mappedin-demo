@@ -15,6 +15,6 @@ export default defineConfig({
   },
   ssr: {
     // Keep this SDK out of the Node build
-    external: ["@mappedin/react-sdk"],
+    noExternal: ["@mappedin/react-sdk"],
   }
 })
