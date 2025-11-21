@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { AppContext } from './AppContext';
 import type { TNavigationTarget } from '@mappedin/react-sdk/mappedin-js/src/types';
-import { ClientOnly } from '@/ClientOnly';
 
 interface AppContextProviderProps {
   children: ReactNode;
@@ -16,21 +15,19 @@ export default function AppContextProvider({
   const [heatmapSpaceId, setHeatmapSpaceId] = useState<string>();
 
   return (
-    <ClientOnly>
-      <AppContext.Provider
-      value={{
-        mapId,
-        setMapId,
-        navigationFrom,
-        setNavigationFrom,
-        navigationTo,
-        setNavigationTo,
-        heatmapSpaceId,
-        setHeatmapSpaceId,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
-    </ClientOnly>
+    <AppContext.Provider
+    value={{
+      mapId,
+      setMapId,
+      navigationFrom,
+      setNavigationFrom,
+      navigationTo,
+      setNavigationTo,
+      heatmapSpaceId,
+      setHeatmapSpaceId,
+    }}
+  >
+    {children}
+  </AppContext.Provider>
   );
 }
