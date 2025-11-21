@@ -20,7 +20,6 @@ import {
 import type { Connection } from '@mappedin/react-sdk/mappedin-js/src';
 import { AppContext } from '@/context/AppContext';
 import { HeatmapWidget } from './demo-widgets/HeatmapWidget';
-import { ClientOnly } from '@/ClientOnly';
 
 function MyCustomComponent() {
   const { mapData, mapView } = useMap();
@@ -106,9 +105,7 @@ export default function MappedInMap({ mapId, children }: MappedInMapProps) {
   return mapData ? (
     <MapView mapData={mapData} className={mapClassName}>
       <MyCustomComponent />
-      <ClientOnly>
-        <InteractionManager />
-      </ClientOnly>
+      <InteractionManager />
       
       <ConnectionMarkers />
 
@@ -119,12 +116,10 @@ export default function MappedInMap({ mapId, children }: MappedInMapProps) {
 
       <nav className="col-[2/3] row-[1/3] self-start justify-self-end relative z-10 p-2 overflox-y-auto space-y-4">
         
-        <ClientOnly>
-          <FloorSelector />
-        </ClientOnly>
+        <FloorSelector />
         
 
-        {heatmapSpaceId && <ClientOnly><HeatmapWidget /></ClientOnly>}
+        {heatmapSpaceId && <HeatmapWidget />}
       </nav>
     </MapView>
   ) : null;
