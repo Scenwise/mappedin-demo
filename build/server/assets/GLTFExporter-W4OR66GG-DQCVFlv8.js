@@ -1,4 +1,4 @@
-import { g as Ft, j as Vt, i as I, a1 as En, a2 as ve, a3 as Aa, H, a4 as Ml, a5 as _s, a6 as In, Z as Zp, D as De, t as cn, a7 as ae$1, a8 as ps, a9 as hl, aa as Ve, a, ab as Fe, ac as yf, ad as Hs, r as en, ae as Oa, af as Wn, ag as zn, ah as Ur, ai as Nr, aj as Fr } from "./_virtual_netlify-server-DZKFn6bU.js";
+import { g as Ft, j as Vt, i as I, a1 as En, a2 as ve, a3 as Aa, H, a4 as Ml, a5 as _s, a6 as In, Z as Zp, D as De, t as cn, a7 as ae$1, a8 as ps, a9 as hl, aa as Ve, a, ab as Fe, ac as yf, ad as Hs, r as en, ae as Oa, af as Wn, ag as zn, ah as Ur, ai as Nr, aj as Fr } from "./_virtual_netlify-server-CRqbjBQB.js";
 import "@netlify/vite-plugin-react-router/serverless";
 import "react/jsx-runtime";
 import "node:stream";
@@ -17,6 +17,7 @@ import "@lucide/lab";
 import "recharts";
 import "@radix-ui/react-slot";
 import "class-variance-authority";
+import "@radix-ui/react-slider";
 import "@radix-ui/react-dialog";
 import "@radix-ui/react-tooltip";
 import "react-router-dom";

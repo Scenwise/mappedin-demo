@@ -1,4 +1,4 @@
-import { Q as Q$1, O as O$1, R as R$1, o as or, S, b as Q$2, N, P as P$1, H as H$1, z as z3, $ as $l, c as Vg, d as Ps, n as nl, K as Kg, G as G$1, F as F$1, a } from "./_virtual_netlify-server-DZKFn6bU.js";
+import { Q as Q$1, O as O$1, R as R$1, o as or, S, b as Q$2, N, P as P$1, H as H$1, z as z3, $ as $l, c as Vg, d as Ps, n as nl, K as Kg, G as G$1, F as F$1, a } from "./_virtual_netlify-server-CRqbjBQB.js";
 import "@netlify/vite-plugin-react-router/serverless";
 import "react/jsx-runtime";
 import "node:stream";
@@ -17,6 +17,7 @@ import "@lucide/lab";
 import "recharts";
 import "@radix-ui/react-slot";
 import "class-variance-authority";
+import "@radix-ui/react-slider";
 import "@radix-ui/react-dialog";
 import "@radix-ui/react-tooltip";
 import "react-router-dom";

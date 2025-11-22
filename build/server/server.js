@@ -1,5 +1,5 @@
 import "@netlify/vite-plugin-react-router/serverless";
-import { bM } from "./assets/_virtual_netlify-server-DZKFn6bU.js";
+import { bM } from "./assets/_virtual_netlify-server-CRqbjBQB.js";
 import "react/jsx-runtime";
 import "node:stream";
 import "@react-router/node";
@@ -17,6 +17,7 @@ import "@lucide/lab";
 import "recharts";
 import "@radix-ui/react-slot";
 import "class-variance-authority";
+import "@radix-ui/react-slider";
 import "@radix-ui/react-dialog";
 import "@radix-ui/react-tooltip";
 import "react-router-dom";

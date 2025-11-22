@@ -13,6 +13,7 @@ export default function AppContextProvider({
   const [navigationFrom, setNavigationFrom] = useState<TNavigationTarget>();
   const [navigationTo, setNavigationTo] = useState<TNavigationTarget>();
   const [heatmapSpaceId, setHeatmapSpaceId] = useState<string>();
+  const [stackedFloors, setStackedFloors] = useState<boolean>(false);
 
   return (
     <AppContext.Provider
@@ -25,6 +26,8 @@ export default function AppContextProvider({
       setNavigationTo,
       heatmapSpaceId,
       setHeatmapSpaceId,
+      stackedFloors,
+      setStackedFloors
     }}
   >
     {children}

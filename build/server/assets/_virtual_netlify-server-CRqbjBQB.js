@@ -19,6 +19,7 @@ import * as RechartsPrimitive from "recharts";
 import { AreaChart, CartesianGrid, XAxis, Area } from "recharts";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
+import * as SliderPrimitive from "@radix-ui/react-slider";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { TooltipTrigger as TooltipTrigger$1 } from "@radix-ui/react-tooltip";
@@ -50639,7 +50640,7 @@ async function TS(r5, { signal: t }) {
 }
 H$3(TS, "getLanguagePackUnitArray");
 async function Od2(r5) {
-  let e = (await import("./browser-6HMQAV4T-CVBTXkDD.js")).unzipSync(r5), n4 = {};
+  let e = (await import("./browser-6HMQAV4T-DHStYvBs.js")).unzipSync(r5), n4 = {};
   if (e["enterprise/"] != null) {
     n4.enterprise = {};
     let i = e["enterprise/locations.json"];
@@ -50775,7 +50776,7 @@ async function hb(r5) {
     try {
       if (r5 == null || typeof r5 != "object") throw new Error("Error parsing data! Unzipping failed.");
       if (r5[Symbol.toStringTag] !== "Uint8Array") throw new Error("Unexpected file type! Unzipping failed.");
-      let i = (await import("./browser-6HMQAV4T-CVBTXkDD.js")).unzipSync(r5);
+      let i = (await import("./browser-6HMQAV4T-DHStYvBs.js")).unzipSync(r5);
       if (!NG(i)) throw new Error("MVF is missing some expect static files. Unzipping failed.");
       let a4 = {}, u5 = Object.keys(i);
       for (let h of u5) {
@@ -50840,7 +50841,7 @@ var fb = H$3((r5) => {
   return t.length === 1 ? [] : t.filter((i) => i.type !== "Outdoor").map((i) => i.id.replace("fs_", "").replace("ms_", ""));
 }, "getBuildingIds"), cb;
 async function jG() {
-  return cb || (cb = (await import("./dist-NFOUUHU5-XzvEbjti.js")).extractAndConvertMVFv3, cb);
+  return cb || (cb = (await import("./dist-NFOUUHU5-C2FTl9_W.js")).extractAndConvertMVFv3, cb);
 }
 H$3(jG, "getExtractAndConvertMvfV3");
 var X7 = H$3(async (r5) => {
@@ -50904,7 +50905,7 @@ var ay2, ly, uy, ES = class ES2 {
     }
   }
   async enable() {
-    this.enabled || (this.enabled = true, this.searchInstance || (this.searchInstance = import("./internal-A2RG32A3-DqUIrAtZ.js").then(({ InternalSearch: t }) => new t(P(this, ay2)))), P(this, ly).on("language-change", P(this, uy)), await this.searchInstance);
+    this.enabled || (this.enabled = true, this.searchInstance || (this.searchInstance = import("./internal-A2RG32A3-CRi4N5pO.js").then(({ InternalSearch: t }) => new t(P(this, ay2)))), P(this, ly).on("language-change", P(this, uy)), await this.searchInstance);
   }
 };
 ay2 = /* @__PURE__ */ new WeakMap(), ly = /* @__PURE__ */ new WeakMap(), uy = /* @__PURE__ */ new WeakMap(), H$3(ES, "Search");
@@ -54082,7 +54083,7 @@ async function $3(r5) {
 }
 H$3($3, "preloadFont");
 function Jd() {
-  return Z3 || (Z3 = import("./text3d-ZRYODT3I-D2_yPCxB.js").then((r5) => r5)), Z3;
+  return Z3 || (Z3 = import("./text3d-ZRYODT3I--w3A3sFW.js").then((r5) => r5)), Z3;
 }
 H$3(Jd, "getText3DService");
 async function X8({ entityId: r5, textComponent: t, styleComponent: e, convertTo3DMapPosition: n4, batchedMeshPromise: i, rendererState: a4, type: u5 = "text-area" }) {
@@ -54690,7 +54691,7 @@ var Bh3, gl, rx2, Oc3, yO, Fy2, nx2, vO, bO, By2, ix2, Gy2, Vy2, ox, hI = class 
 };
 Bh3 = /* @__PURE__ */ new WeakMap(), gl = /* @__PURE__ */ new WeakMap(), rx2 = /* @__PURE__ */ new WeakMap(), Oc3 = /* @__PURE__ */ new WeakSet(), yO = H$3(async function() {
   if (!P(this, Bh3)) {
-    let { GLTFExporter: t } = await import("./GLTFExporter-W4OR66GG-CMwk1rb4.js");
+    let { GLTFExporter: t } = await import("./GLTFExporter-W4OR66GG-DQCVFlv8.js");
     R$1(this, Bh3, new t());
   }
   return P(this, Bh3);
@@ -54960,7 +54961,7 @@ var bI = class bI2 extends Se$1 {
   }
   async getGLTFLoader() {
     if (this.loader) return this.loader;
-    let { GLTFLoader: e } = await import("./GLTFLoader-CWW4SC4X-CMtq9RR0.js");
+    let { GLTFLoader: e } = await import("./GLTFLoader-CWW4SC4X-D_Ro-L18.js");
     return this.loader = new e(), this.loader;
   }
   createEntityFromFeature(e, n4, i) {
@@ -59351,7 +59352,7 @@ async function TD(r5, t) {
   var i, a4, u5, h, d, m5, v3, x2;
   let e = (i = t == null ? void 0 : t.useWorkers) != null ? i : true, n4 = G$1(F$1({}, t), { watermark: t == null ? void 0 : t.watermark, attribution: t == null ? void 0 : t.attribution, antialias: t == null ? void 0 : t.antialias, occlusionEnabled: t == null ? void 0 : t.occlusionEnabled, transformImageRequest: t == null ? void 0 : t.transformImageRequest, naturalBearing: (a4 = t == null ? void 0 : t.naturalBearing) != null ? a4 : 0, imagePlacementOptions: t == null ? void 0 : t.imagePlacementOptions, onWebGLContextCreationError: t == null ? void 0 : t.onWebGLContextCreationError, onWebGLContextLost: t == null ? void 0 : t.onWebGLContextLost, onWebGLContextRestored: t == null ? void 0 : t.onWebGLContextRestored, onWebGLRendererError: t == null ? void 0 : t.onWebGLRendererError, useStandaloneCamera: (u5 = t == null ? void 0 : t.useStandaloneCamera) != null ? u5 : false, useCollisionWorker: (h = t == null ? void 0 : t.useCollisionWorker) != null ? h : true, useWorkers: e });
   if (e === true && ((d = t == null ? void 0 : t.outdoorView) != null && d.enabled)) {
-    let { Map: S4, MercatorCoordinate: I3 } = await import("./outdoor-context-v4-FKKIRNTV-BGDJ1U6X.js"), w3 = t.outdoorView.headers;
+    let { Map: S4, MercatorCoordinate: I3 } = await import("./outdoor-context-v4-FKKIRNTV-Dj6txBAA.js"), w3 = t.outdoorView.headers;
     w3 == null && (w3 = await wi2(KW));
     let E4 = t.center || [0, 0], T3 = new S4({ container: r5, style: t.outdoorView.style || MD, center: E4, attributionControl: false, zoom: (m5 = t.zoomLevel) != null ? m5 : CM, pitch: (v3 = t.pitch) != null ? v3 : xM, bearing: (x2 = t.bearing) != null ? x2 : _M, transformRequest: qt(w3), trackResize: false, pixelRatio: t.outdoorView.lowDpi ? 1 : Wt(), antialias: typeof t.antialias == "boolean" ? t.antialias : true, boxZoom: false, doubleClickZoom: false, scrollZoom: false, dragPan: false, dragRotate: false, keyboard: false, touchZoomRotate: false }), D4 = T3.painter.context.gl, A3 = new C1(r5, F$1({ center: E4, zoomLevel: T3.getZoom(), pitch: T3.getPitch(), bearing: T3.getBearing(), gl: D4, map: T3, mode: "outdoors-interleaved" }, n4)), L3 = { center: T3.getCenter().toArray(), zoom: T3.getZoom(), bearing: T3.getBearing(), pitch: T3.getPitch() };
     T3.setMinZoom(A3.camera.minZoomLevel), T3.setMaxZoom(A3.camera.maxZoomLevel), A3.on("camera-change", (J4) => {
@@ -62212,7 +62213,7 @@ var mf2, jt, Pl, PT = class PT2 {
     P(this, jt).destroy();
   }
   async enableDebug(t = {}) {
-    let { Inspector: e } = await import("./inspector-DPNZIY36-Ck5Td1ZT.js");
+    let { Inspector: e } = await import("./inspector-DPNZIY36-Bza2xX1t.js");
     await new e(this, P(this, jt)).enable(t);
   }
   async takeScreenshot() {
@@ -64309,9 +64310,9 @@ function Label({
     }
   );
 }
-const { useMap: useMap$9 } = mappedin;
-function FloorSelector() {
-  const { mapData, mapView } = useMap$9();
+const { useMap: useMap$a } = mappedin;
+function FloorSelector$1() {
+  const { mapData, mapView } = useMap$a();
   const [currentFloorStackId, setCurrentFloorStackId] = useState(
     mapView.currentFloorStack.id
   );
@@ -64355,9 +64356,9 @@ function FloorSelector() {
     ] })
   ] });
 }
-const { useMap: useMap$8 } = mappedin;
+const { useMap: useMap$9 } = mappedin;
 function InteractionManager() {
-  const { mapView, mapData } = useMap$8();
+  const { mapView, mapData } = useMap$9();
   useEffect(() => {
     if (!mapView || !mapData) return;
     mapData.getByType("space").filter(({ name }) => name?.length).forEach((space2) => {
@@ -64679,10 +64680,10 @@ function Button({
     }
   );
 }
-const { useMap: useMap$7 } = mappedin;
+const { useMap: useMap$8 } = mappedin;
 function HeatmapWidget() {
   const { heatmapSpaceId, setHeatmapSpaceId } = useContext(AppContext);
-  const { mapData } = useMap$7();
+  const { mapData } = useMap$8();
   const space2 = mapData.getById("space", heatmapSpaceId);
   if (!space2) return null;
   const chartData = Array.from({ length: 24 }, (_, i) => ({
@@ -64733,6 +64734,84 @@ function HeatmapWidget() {
       )
     ] }) }) })
   ] });
+}
+function Slider({
+  className,
+  defaultValue,
+  value,
+  min = 0,
+  max = 100,
+  ...props
+}) {
+  const _values = React.useMemo(
+    () => Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min, max],
+    [value, defaultValue, min, max]
+  );
+  return /* @__PURE__ */ jsxs(
+    SliderPrimitive.Root,
+    {
+      "data-slot": "slider",
+      defaultValue,
+      value,
+      min,
+      max,
+      className: cn(
+        "relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col",
+        className
+      ),
+      ...props,
+      children: [
+        /* @__PURE__ */ jsx(
+          SliderPrimitive.Track,
+          {
+            "data-slot": "slider-track",
+            className: cn(
+              "bg-muted relative grow overflow-hidden rounded-full data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5"
+            ),
+            children: /* @__PURE__ */ jsx(
+              SliderPrimitive.Range,
+              {
+                "data-slot": "slider-range",
+                className: cn(
+                  "bg-primary absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
+                )
+              }
+            )
+          }
+        ),
+        Array.from({ length: _values.length }, (_, index) => /* @__PURE__ */ jsx(
+          SliderPrimitive.Thumb,
+          {
+            "data-slot": "slider-thumb",
+            className: "border-primary bg-background ring-ring/50 block size-4 shrink-0 rounded-full border shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+          },
+          index
+        ))
+      ]
+    }
+  );
+}
+const { useMap: useMap$7 } = mappedin;
+function FloorSelector() {
+  const { mapData, mapView } = useMap$7();
+  const [currentFloorDistance, setCurrentFloorDistance] = useState(0);
+  const [currentFloorStackId, setCurrentFloorStackId] = useState(
+    mapView.currentFloorStack.id
+  );
+  const [currentFloorId, setCurrentFloorId] = useState(mapView.currentFloor.id);
+  function handleFloorDistanceChange(aDistanceM) {
+    const distanceM = aDistanceM.at(0);
+    if (distanceM != void 0) {
+      console.log(distanceM);
+      setCurrentFloorDistance(distanceM);
+      console.log(currentFloorStackId);
+      console.log(currentFloorId);
+    } else {
+      setCurrentFloorDistance(0);
+      mapView.StackedMaps.collapse();
+    }
+  }
+  return /* @__PURE__ */ jsx(Slider, { defaultValue: [0], max: 50, min: 0, step: 1, onValueChange: handleFloorDistanceChange });
 }
 const { MapView, useMapData, useMap: useMap$6, Marker } = mappedin;
 function MyCustomComponent() {
@@ -64798,6 +64877,7 @@ function MappedInMap({ mapId, children }) {
     /* @__PURE__ */ jsx(ConnectionMarkers, {}),
     /* @__PURE__ */ jsx("aside", { className: "col-[1/2] row-[2/3] overflow-y-auto overflow-x-hidden", children }),
     /* @__PURE__ */ jsxs("nav", { className: "col-[2/3] row-[1/3] self-start justify-self-end relative z-10 p-2 overflox-y-auto space-y-4", children: [
+      /* @__PURE__ */ jsx(FloorSelector$1, {}),
       /* @__PURE__ */ jsx(FloorSelector, {}),
       heatmapSpaceId && /* @__PURE__ */ jsx(HeatmapWidget, {})
     ] })
@@ -66166,9 +66246,8 @@ function StackedFloorsDemo() {
   const { mapData, mapView } = useMap();
   function onEnabled(enabled) {
     if (!mapView) return;
-    if (enabled) {
-      mapView.StackedMaps.expand({ distanceBetweenFloors: "auto" });
-    } else {
+    if (enabled) ;
+    else {
       mapView.StackedMaps.collapse();
     }
   }
@@ -66198,7 +66277,7 @@ const route5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: demos
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-RZi-ff8t.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-BP1L8zXC.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/root-DKwwea1t.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-BP1L8zXC.js"], "css": ["/assets/root-DAtXX4TS.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/layout": { "id": "routes/layout", "parentId": "root", "path": void 0, "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/layout-BLr_GTn0.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-LQx0N5oG.js", "/assets/select-Dj2JEEuD.js", "/assets/tooltip-BicAPSV1.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/card-NGpA5C1B.js", "/assets/button-BQnWc8Z8.js", "/assets/sidebar-DUZrABxk.js", "/assets/index-BP1L8zXC.js", "/assets/Combination-BM3GwNwT.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/info": { "id": "routes/info", "parentId": "routes/layout", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/info-B2wGv5Lv.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-LQx0N5oG.js", "/assets/sidebar-DUZrABxk.js", "/assets/tooltip-BicAPSV1.js", "/assets/Combination-BM3GwNwT.js", "/assets/use-click-navigation-C8qDvtLp.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/space": { "id": "routes/space", "parentId": "routes/layout", "path": "/space/:id", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/space-wwbBgkgW.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-LQx0N5oG.js", "/assets/button-BQnWc8Z8.js", "/assets/use-click-navigation-C8qDvtLp.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/navigation": { "id": "routes/navigation", "parentId": "routes/layout", "path": "/navigation", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/navigation-BFr7gZg5.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/select-Dj2JEEuD.js", "/assets/index-LQx0N5oG.js", "/assets/button-BQnWc8Z8.js", "/assets/tooltip-BicAPSV1.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/index-BP1L8zXC.js", "/assets/Combination-BM3GwNwT.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/demos": { "id": "routes/demos", "parentId": "routes/layout", "path": "/demos", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/demos-DBhIV0Nz.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-LQx0N5oG.js", "/assets/card-NGpA5C1B.js", "/assets/tooltip-BicAPSV1.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/button-BQnWc8Z8.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-2ff634ca.js", "version": "2ff634ca", "sri": void 0 };
+const serverManifest = { "entry": { "module": "/assets/entry.client-RZi-ff8t.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-BP1L8zXC.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/root-DKwwea1t.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-BP1L8zXC.js"], "css": ["/assets/root-DAtXX4TS.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/layout": { "id": "routes/layout", "parentId": "root", "path": void 0, "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/layout-RKR9N38Q.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-LQx0N5oG.js", "/assets/select-fG8JjqQH.js", "/assets/tooltip-BM-lnvOs.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/card-NGpA5C1B.js", "/assets/button-BQnWc8Z8.js", "/assets/sidebar-BCYPihsZ.js", "/assets/Combination-BorzZcYL.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/info": { "id": "routes/info", "parentId": "routes/layout", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/info-BRt9rD5M.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-LQx0N5oG.js", "/assets/sidebar-BCYPihsZ.js", "/assets/tooltip-BM-lnvOs.js", "/assets/Combination-BorzZcYL.js", "/assets/use-click-navigation-C8qDvtLp.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/space": { "id": "routes/space", "parentId": "routes/layout", "path": "/space/:id", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/space-wwbBgkgW.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-LQx0N5oG.js", "/assets/button-BQnWc8Z8.js", "/assets/use-click-navigation-C8qDvtLp.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/navigation": { "id": "routes/navigation", "parentId": "routes/layout", "path": "/navigation", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/navigation-Cnre9C7e.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/select-fG8JjqQH.js", "/assets/index-LQx0N5oG.js", "/assets/button-BQnWc8Z8.js", "/assets/tooltip-BM-lnvOs.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/index-BP1L8zXC.js", "/assets/Combination-BorzZcYL.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/demos": { "id": "routes/demos", "parentId": "routes/layout", "path": "/demos", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/demos-CwyNE9Mv.js", "imports": ["/assets/chunk-UIGDSWPH-CIt85NzU.js", "/assets/index-LQx0N5oG.js", "/assets/card-NGpA5C1B.js", "/assets/tooltip-BM-lnvOs.js", "/assets/AppContext-Bo8Z6ja1.js", "/assets/button-BQnWc8Z8.js", "/assets/PageHeader-DmSe1-NI.js", "/assets/index-BP1L8zXC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-1cda10ab.js", "version": "1cda10ab", "sri": void 0 };
 const assetsBuildDirectory = "build/client";
 const basename = "/";
 const future = { "v8_middleware": false, "unstable_optimizeDeps": false, "unstable_splitRouteModules": false, "unstable_subResourceIntegrity": false, "unstable_viteEnvironmentApi": false };

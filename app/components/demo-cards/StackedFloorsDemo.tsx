@@ -1,17 +1,23 @@
 import * as mappedin from '@mappedin/react-sdk';
 const { useMap } = mappedin;
 import DemoCard from './DemoCard';
+import { useContext } from 'react';
+import { AppContext } from '@/context/AppContext';
 
 export default function StackedFloorsDemo() {
+    const { setStackedFloors } = useContext(AppContext);
+  
   const { mapData, mapView } = useMap();
 
   function onEnabled(enabled: boolean) {
     if (!mapView) return;
 
     if (enabled) {
-      mapView.StackedMaps.expand({ distanceBetweenFloors: 'auto' });
+      mapView.StackedMaps.expand({ distanceBetweenFloors: 20 });
+      setStackedFloors(true);
     } else {
       mapView.StackedMaps.collapse();
+      setStackedFloors(false)
     }
   }
 
