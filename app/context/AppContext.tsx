@@ -12,6 +12,8 @@ interface AppContext {
   setNavigationTo: SetState<TNavigationTarget | undefined>;
   heatmapSpaceId: string | undefined;
   setHeatmapSpaceId: SetState<string | undefined>;
+  stackedFloors: boolean;
+  setStackedFloors: SetState<boolean>;
 }
 
 export const AppContext = createContext<AppContext>({} as AppContext);

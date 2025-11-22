@@ -1,5 +1,5 @@
-import { aX as TD } from "./_virtual_netlify-server-DZKFn6bU.js";
-import { aY, aZ, a_, a$, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, ba, bb, bc, bd, be, bf, bg, bh, bi, bj, bk, bl, bm, bn, bo, bp, bq, br, bs, bt, bu, bv, bw, bx, by, bz, bA, bB, bC, bD, bE, bF, bG, bH } from "./_virtual_netlify-server-DZKFn6bU.js";
+import { aX as TD } from "./_virtual_netlify-server-CRqbjBQB.js";
+import { aY, aZ, a_, a$, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, ba, bb, bc, bd, be, bf, bg, bh, bi, bj, bk, bl, bm, bn, bo, bp, bq, br, bs, bt, bu, bv, bw, bx, by, bz, bA, bB, bC, bD, bE, bF, bG, bH } from "./_virtual_netlify-server-CRqbjBQB.js";
 import "@netlify/vite-plugin-react-router/serverless";
 import "react/jsx-runtime";
 import "node:stream";
@@ -18,6 +18,7 @@ import "@lucide/lab";
 import "recharts";
 import "@radix-ui/react-slot";
 import "class-variance-authority";
+import "@radix-ui/react-slider";
 import "@radix-ui/react-dialog";
 import "@radix-ui/react-tooltip";
 import "react-router-dom";

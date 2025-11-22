@@ -20,6 +20,7 @@ import {
 import type { Connection } from '@mappedin/react-sdk/mappedin-js/src';
 import { AppContext } from '@/context/AppContext';
 import { HeatmapWidget } from './demo-widgets/HeatmapWidget';
+import FloorDistance from './FloorDistance';
 
 function MyCustomComponent() {
   const { mapData, mapView } = useMap();
@@ -115,10 +116,8 @@ export default function MappedInMap({ mapId, children }: MappedInMapProps) {
       </aside>
 
       <nav className="col-[2/3] row-[1/3] self-start justify-self-end relative z-10 p-2 overflox-y-auto space-y-4">
-        
         <FloorSelector />
-        
-
+        <FloorDistance />
         {heatmapSpaceId && <HeatmapWidget />}
       </nav>
     </MapView>
