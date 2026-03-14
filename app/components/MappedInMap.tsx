@@ -120,6 +120,41 @@ export default function MappedInMap({ mapId, children }: MappedInMapProps) {
         <FloorDistance />
         {heatmapSpaceId && <HeatmapWidget />}
       </nav>
+      {/* TEST OVERLAY */}
+      <div
+        style={{
+          position: "absolute",
+          top: "95%",
+          left: "26%",
+          transform: "translate(-50%, -50%)",
+          background: "white",
+          color: "black",
+          padding: "12px 24px",
+          fontWeight: "bold",
+          zIndex: 9999,
+          width: "170px",
+          textAlign: "center"
+        }}
+      >
+        SCENWISE
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          top: "97.5%",
+          left: "87.5%",
+          transform: "translate(-50%, -50%)",
+          background: "white",
+          color: "black",
+          zIndex: 9999,
+          width: "55px",
+          fontSize: "8px",
+          textAlign: "center"
+        }}
+      >
+        ©SCENWISE
+      </div>
     </MapView>
   ) : null;
 }

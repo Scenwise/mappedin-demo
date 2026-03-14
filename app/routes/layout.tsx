@@ -30,7 +30,7 @@ function Main() {
       </div>
         <MappedInMap mapId={mapId} key={mapId}>
         <Outlet />
-      </MappedInMap>      
+      </MappedInMap>
     </main>
   );
 }
