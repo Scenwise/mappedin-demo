@@ -34,36 +34,70 @@ export default function AppSidebar() {
   const location = useLocation();
 
   return (
-    <Sidebar collapsible="icon" variant="sidebar">
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            {items.map((item) => (
-              <Tooltip key={item.to}>
-                <TooltipTrigger>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={location.pathname === item.to}
-                  >
-                    <NavLink to={item.to}>{item.icon && <item.icon />}</NavLink>
-                  </SidebarMenuButton>
-                </TooltipTrigger>
-                <TooltipContent side="right">{item.label}</TooltipContent>
-              </Tooltip>
-            ))}
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
+    <>
+      <Sidebar collapsible="icon" variant="sidebar">
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupContent>
+              {items.map((item) => (
+                <Tooltip key={item.to}>
+                  <TooltipTrigger>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={location.pathname === item.to}
+                    >
+                      <NavLink to={item.to}>
+                        {item.icon && <item.icon />}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">{item.label}</TooltipContent>
+                </Tooltip>
+              ))}
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
 
-      <SidebarFooter>
-        <h1
-          className="scroll-m-20 text-xl font-medium tracking-tight"
-          style={{ writingMode: 'sideways-lr' }}
+        <SidebarFooter>
+          <h1
+            className="scroll-m-20 text-xl font-medium tracking-tight"
+            style={{ writingMode: 'sideways-lr' }}
+          >
+            Scenwise
+            <span className="text-muted-foreground"> | MappedIn Demo</span>
+          </h1>
+        </SidebarFooter>
+      </Sidebar>
+
+      {/* TEST OVERLAY */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: "0",
+          left: "0",
+          width: "47px",
+          height: "300px",
+          background: "#f7f7f7",
+          zIndex: 9999999,
+          pointerEvents: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            transform: "rotate(-90deg)",
+            whiteSpace: "nowrap",
+            fontSize: "14px",
+            fontWeight: 400,
+            letterSpacing: "0.5px",
+          }}
         >
-          Scenwise
-          <span className="text-muted-foreground"> | MappedIn Demo</span>
-        </h1>
-      </SidebarFooter>
-    </Sidebar>
+          <strong>SCENWISE</strong> | Indoor Mapping Demo
+        </div>
+      </div>
+    </>
   );
+
 }

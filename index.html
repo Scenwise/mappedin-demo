@@ -18,12 +18,32 @@
         position: relative;
       }
 
+      #mappedin-cover {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        width: 160px;
+        height: 70px;
+        background: black;
+        z-index: 999999;
+        pointer-events: none;
+        border-radius: 6px;
+      }
+
+
     </style>
   </head>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<body>
+  <div id="root">
+      <!-- Overlay to cover Mappedin watermark -->
+  <div id="mappedin-cover"></div>
+  </div>
+
+
+
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 
 </html>
