@@ -88,14 +88,22 @@ export default function AppSidebar() {
         <div
           style={{
             transform: "rotate(-90deg)",
+            transformOrigin: "center",
             whiteSpace: "nowrap",
-            fontSize: "14px",
+            fontSize: "clamp(10px, 1.2vw, 16px)",
             fontWeight: 400,
-            letterSpacing: "0.5px",
+            letterSpacing: "0.05em",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            width: "max-content"
           }}
         >
-          <strong>SCENWISE</strong> | Indoor Mapping Demo
+          <strong style={{ marginRight: "6px" }}>SCENWISE</strong>
+          <span style={{ opacity: 0.7 }}>| Indoor Mapping Demo</span>
         </div>
+
       </div>
     </>
   );
