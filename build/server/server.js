@@ -1,5 +1,5 @@
 import "@netlify/vite-plugin-react-router/serverless";
-import { bM } from "./assets/_virtual_netlify-server-MkDhHlEm.js";
+import { bM } from "./assets/_virtual_netlify-server-DET1eeme.js";
 import "react/jsx-runtime";
 import "node:stream";
 import "@react-router/node";
