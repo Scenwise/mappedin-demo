@@ -144,7 +144,7 @@ export default function MappedInMap({ mapId, children }: MappedInMapProps) {
         style={{
           position: "absolute",
           bottom: "15px",
-          right: "210px",
+          right: "212px",
           background: "white",
           color: "black",
           zIndex: 9999,
@@ -156,6 +156,23 @@ export default function MappedInMap({ mapId, children }: MappedInMapProps) {
         }}
       >
         ©SCENWISE
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          bottom: "15px",
+          right: "50px",
+          background: "white",
+          color: "black",
+          zIndex: 9999,
+          width: "105px",
+          height: "20px",
+          fontSize: "8px",
+          textAlign: "center",
+          borderRadius: "4px",
+          padding: "2px"
+        }}
+      >
       </div>
 
     </MapView>
