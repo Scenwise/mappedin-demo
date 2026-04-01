@@ -1,0 +1,1 @@
+import{m as a}from"./index-z47VkHfU.js";import{A as e}from"./chunk-UVKPFVEO-D-6FKusk.js";const{useEvent:n}=a;function c(){const t=e();n("click",({spaces:i})=>{i.length&&t(`/space/${i[0].id}`)})}export{c as u};
