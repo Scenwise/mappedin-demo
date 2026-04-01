@@ -1,5 +1,5 @@
 import "@netlify/vite-plugin-react-router/serverless";
-import { bM } from "./assets/_virtual_netlify-server-DET1eeme.js";
+import { bM } from "./assets/_virtual_netlify-server-2yNJ6tjo.js";
 import "react/jsx-runtime";
 import "node:stream";
 import "@react-router/node";
@@ -26,6 +26,8 @@ import "@radix-ui/react-collapsible";
 import "@radix-ui/react-switch";
 import "@radix-ui/react-progress";
 import "@radix-ui/react-separator";
+import "@deck.gl/mapbox";
+import "@deck.gl/layers";
 export {
   bM as default
 };
