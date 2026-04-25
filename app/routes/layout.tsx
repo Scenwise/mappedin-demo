@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import MappedInMap from '@/components/MappedInMap';
 
 import { SidebarProvider } from '@/components/ui/sidebar';
@@ -7,8 +7,24 @@ import AppSidebar from '@/components/AppSidebar';
 import { AppContext } from '@/context/AppContext';
 import AppContextProvider from '@/context/AppContextProvider';
 import MapSelector from '@/components/MapSelector';
+import LoginScreen from '@/components/LoginScreen';
 
 export default function Layout() {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => typeof sessionStorage !== 'undefined' && sessionStorage.getItem('auth') === '1'
+  );
+
+  if (!isAuthenticated) {
+    return (
+      <LoginScreen
+        onSuccess={() => {
+          sessionStorage.setItem('auth', '1');
+          setIsAuthenticated(true);
+        }}
+      />
+    );
+  }
+
   return (
     <AppContextProvider>
     <SidebarProvider defaultOpen={false} className="max-h-svh">
@@ -16,7 +32,7 @@ export default function Layout() {
 
       <Main />
     </SidebarProvider>
-  </AppContextProvider>   
+  </AppContextProvider>
   );
 }
 

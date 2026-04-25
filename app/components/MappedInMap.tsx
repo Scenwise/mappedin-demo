@@ -20,6 +20,7 @@ import {
 import type { Connection } from '@mappedin/react-sdk/mappedin-js/src';
 import { AppContext } from '@/context/AppContext';
 import { HeatmapWidget } from './demo-widgets/HeatmapWidget';
+import { ResponderMarkers } from './demo-widgets/ResponderMarkers';
 import FloorDistance from './FloorDistance';
 
 function MyCustomComponent() {
@@ -32,6 +33,24 @@ function MyCustomComponent() {
         mapView.Labels.all();
       }
       initializeLabels();
+
+      // Log bounding box of the building whenever a map is loaded
+      const nodes = mapData.getByType('node') as mappedin.Node[];
+      if (nodes.length > 0) {
+        let minLat = Infinity, maxLat = -Infinity;
+        let minLng = Infinity, maxLng = -Infinity;
+        for (const n of nodes) {
+          const { latitude: lat, longitude: lng } = n.coordinate;
+          if (lat < minLat) minLat = lat;
+          if (lat > maxLat) maxLat = lat;
+          if (lng < minLng) minLng = lng;
+          if (lng > maxLng) maxLng = lng;
+        }
+        console.log(`[Map] "${mapData.mapName}" bounding box:`, {
+          minLat, maxLat, minLng, maxLng,
+          center: mapData.mapCenter,
+        });
+      }
     }
   }, [mapData, mapView]);
 
@@ -107,8 +126,8 @@ export default function MappedInMap({ mapId, children }: MappedInMapProps) {
     <MapView mapData={mapData} className={mapClassName}>
       <MyCustomComponent />
       <InteractionManager />
-      
       <ConnectionMarkers />
+      <ResponderMarkers />
 
       {/* The following components will be siblings to the map, not children */}
       <aside className="col-[1/2] row-[2/3] overflow-y-auto overflow-x-hidden">
