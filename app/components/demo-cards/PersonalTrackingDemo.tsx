@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Pause, Play, RotateCcw, Info } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
 import { MapboxOverlay } from '@deck.gl/mapbox';
 import {
   createTrackingDotsLayer,
@@ -17,21 +18,22 @@ const DEFAULT_NUM_DOTS = 50;
 const UPDATES_PER_SECOND = 10;
 const WALKING_SPEED_MPS = 3.0;
 const DISTANCE_PER_UPDATE = WALKING_SPEED_MPS / UPDATES_PER_SECOND;
+const MAX_PATH_COMPUTES_PER_TICK = 15;
+const LABELS_VISIBLE_THRESHOLD = 100;
 
-type Role = 'cleaner' | 'manager' | 'technician';
+type Role = 'cleaner' | 'security' | 'technician';
 
-const ROLES: Role[] = ['cleaner', 'manager', 'technician'];
+const ROLES: Role[] = ['cleaner', 'security', 'technician'];
 
-// RGBA colors per role
 const ROLE_COLORS: Record<Role, [number, number, number, number]> = {
-  cleaner:    [34,  197,  94, 220],  // green
-  manager:    [239, 68,   68, 220],  // red
-  technician: [234, 179,   8, 220],  // yellow
+  cleaner:    [34,  197,  94, 220],
+  security:   [239, 68,   68, 220],
+  technician: [234, 179,   8, 220],
 };
 
 const ROLE_LABELS: Record<Role, string> = {
   cleaner:    'Cleaner',
-  manager:    'Manager',
+  security:   'Security',
   technician: 'Technician',
 };
 
@@ -90,10 +92,19 @@ export default function PersonalTrackingDemo() {
   const isPlaying = useRef(false);
   const [playing, setPlaying] = useState(false);
   const [numDots, setNumDots] = useState(DEFAULT_NUM_DOTS);
+  const numDotsRef = useRef(50);
+  const [visibleRoles, setVisibleRoles] = useState<Record<Role, boolean>>({
+    cleaner: true, security: true, technician: true,
+  });
+  const visibleRolesRef = useRef<Record<Role, boolean>>({
+    cleaner: true, security: true, technician: true,
+  });
+  const zoomRef = useRef<number>(18);
 
   const peopleRef = useRef<TrackedPerson[]>([]);
   const positionsRef = useRef<Float64Array>(new Float64Array(0));
   const colorsRef = useRef<Uint8Array>(new Uint8Array(0));
+  const rolesRef = useRef<Role[]>([]);
   const labelsRef = useRef<string[]>([]);
   const frameRef = useRef<number>(0);
   const overlayRef = useRef<MapboxOverlay | null>(null);
@@ -104,7 +115,7 @@ export default function PersonalTrackingDemo() {
     return mapData
       .getByType('space')
       .filter(
-        (s) => s.floor.id === mapView.currentFloor.id,
+        (s) => s.floor.id === mapView.currentFloor.id && s.center != null,
       ) as mappedin.Space[];
   }, [mapData, mapView]);
 
@@ -113,6 +124,8 @@ export default function PersonalTrackingDemo() {
     const toSpace = pickRandomSpace(floorSpaces, fromSpace.id);
     const directions = mapData.getDirections(fromSpace, toSpace);
     if (!directions || !directions.coordinates.length) {
+      // Escape dead-end spaces by reassigning to a new random space next tick.
+      person.destinationSpace = toSpace;
       person.needsPath = true;
       return;
     }
@@ -180,23 +193,38 @@ export default function PersonalTrackingDemo() {
   }
 
   function updateOverlay(): void {
-    if (overlayRef.current) {
-      frameRef.current += 1;
-      overlayRef.current.setProps({
-        layers: [
-          createTrackingDotsLayer(
-            positionsRef.current,
-            peopleRef.current.length,
-            colorsRef.current,
-          ),
-          createTrackingLabelsLayer(
-            positionsRef.current,
-            labelsRef.current,
-            frameRef.current,
-          ),
-        ],
-      });
+    if (!overlayRef.current) return;
+    frameRef.current += 1;
+
+    const people = peopleRef.current;
+    const visible = visibleRolesRef.current;
+
+    // Build filtered arrays for visible roles only
+    const filteredPositions: number[] = [];
+    const filteredColors: number[] = [];
+    const filteredLabels: string[] = [];
+
+    for (let i = 0; i < people.length; i++) {
+      if (!visible[people[i].role]) continue;
+      filteredPositions.push(positionsRef.current[i * 2], positionsRef.current[i * 2 + 1]);
+      const c = colorsRef.current;
+      filteredColors.push(c[i * 4], c[i * 4 + 1], c[i * 4 + 2], c[i * 4 + 3]);
+      filteredLabels.push(labelsRef.current[i]);
     }
+
+    const count = filteredPositions.length / 2;
+    const pos = new Float64Array(filteredPositions);
+    const col = new Uint8Array(filteredColors);
+
+    const layers = [
+      createTrackingDotsLayer(pos, count, col, frameRef.current),
+    ];
+    if (count > 0 && count <= LABELS_VISIBLE_THRESHOLD) {
+      layers.push(
+        createTrackingLabelsLayer(pos, filteredLabels, frameRef.current, zoomRef.current),
+      );
+    }
+    overlayRef.current.setProps({ layers });
   }
 
   const initializePeople = useCallback(
@@ -207,24 +235,18 @@ export default function PersonalTrackingDemo() {
       const people: TrackedPerson[] = [];
       for (let i = 0; i < count; i++) {
         const startSpace = pickRandomSpace(floorSpaces);
-        const destSpace = pickRandomSpace(floorSpaces, startSpace.id);
-        const directions = mapData.getDirections(startSpace, destSpace);
-        if (!directions || !directions.coordinates.length) continue;
-
-        const coords = directions.coordinates.map((c) => ({
-          longitude: c.longitude,
-          latitude: c.latitude,
-        }));
-        const segments = buildSegments(coords);
         const role = ROLES[i % ROLES.length];
+        // Place everyone at their start space with needsPath=true.
+        // Paths are computed gradually by the tick loop (MAX_PATH_COMPUTES_PER_TICK per tick)
+        // so initialization is instant regardless of count.
         people.push({
-          lng: coords[0].longitude,
-          lat: coords[0].latitude,
-          segments,
+          lng: startSpace.center.longitude,
+          lat: startSpace.center.latitude,
+          segments: [],
           segIndex: 0,
           segProgress: 0,
-          destinationSpace: destSpace,
-          needsPath: false,
+          destinationSpace: startSpace,
+          needsPath: true,
           role,
         });
       }
@@ -240,11 +262,12 @@ export default function PersonalTrackingDemo() {
         colors[i * 4 + 3] = a;
       }
       colorsRef.current = colors;
+      rolesRef.current = people.map((p) => p.role);
       labelsRef.current = people.map((p) => ROLE_LABELS[p.role]);
 
       syncPositions();
     },
-    [mapData, getFloorSpaces],
+    [getFloorSpaces],
   );
 
   const tick = useCallback(
@@ -259,13 +282,18 @@ export default function PersonalTrackingDemo() {
       lastTickRef.current = now;
 
       const people = peopleRef.current;
-      const floorSpaces = people.some((p) => p.needsPath)
-        ? getFloorSpaces()
-        : null;
+      const needsPathCount = people.filter((p) => p.needsPath).length;
+      const floorSpaces =
+        needsPathCount > 0 ? getFloorSpaces() : null;
 
+      let pathComputesThisTick = 0;
       for (const p of people) {
         if (p.needsPath && floorSpaces && floorSpaces.length >= 2) {
-          computeNewPath(p, floorSpaces);
+          if (pathComputesThisTick < MAX_PATH_COMPUTES_PER_TICK) {
+            computeNewPath(p, floorSpaces);
+            pathComputesThisTick++;
+          }
+          // else: leave needsPath=true, person stays put until next tick
         }
         movePerson(p);
       }
@@ -294,12 +322,13 @@ export default function PersonalTrackingDemo() {
     const map = mapView.Outdoor?.map;
     if (!map || overlayRef.current) return;
 
-    const overlay = new MapboxOverlay({
-      interleaved: false,
-      layers: [],
-    });
+    const overlay = new MapboxOverlay({ interleaved: false, layers: [] });
     map.addControl(overlay as unknown as Parameters<typeof map.addControl>[0]);
     overlayRef.current = overlay;
+
+    // Track zoom so labels can be sized proportionally
+    zoomRef.current = map.getZoom();
+    map.on('zoom', () => { zoomRef.current = map.getZoom(); });
   }, [mapView]);
 
   const removeOverlay = useCallback(() => {
@@ -332,7 +361,7 @@ export default function PersonalTrackingDemo() {
 
     if (enabled) {
       setupOverlay();
-      initializePeople(numDots);
+      initializePeople(numDotsRef.current);
       updateOverlay();
       isPlaying.current = true;
       setPlaying(true);
@@ -344,6 +373,7 @@ export default function PersonalTrackingDemo() {
       peopleRef.current = [];
       positionsRef.current = new Float64Array(0);
       colorsRef.current = new Uint8Array(0);
+      rolesRef.current = [];
       labelsRef.current = [];
       updateOverlay();
       removeOverlay();
@@ -363,13 +393,14 @@ export default function PersonalTrackingDemo() {
     isPlaying.current = false;
     setPlaying(false);
     stopSimulation();
-    initializePeople(numDots);
+    initializePeople(numDotsRef.current);
     updateOverlay();
   }
 
   function handleDotCountChange(value: number[]) {
     const count = value[0];
     setNumDots(count);
+    numDotsRef.current = count;
     if (isEnabled.current) {
       const wasPlaying = isPlaying.current;
       isPlaying.current = false;
@@ -382,6 +413,13 @@ export default function PersonalTrackingDemo() {
         startSimulation();
       }
     }
+  }
+
+  function handleRoleToggle(role: Role, enabled: boolean) {
+    const next = { ...visibleRolesRef.current, [role]: enabled };
+    visibleRolesRef.current = next;
+    setVisibleRoles(next);
+    if (isEnabled.current) updateOverlay();
   }
 
   return (
@@ -413,13 +451,14 @@ export default function PersonalTrackingDemo() {
 
       <div className="space-y-1">
         <label className="text-xs text-muted-foreground">
-          People: {peopleRef.current.length}
+          People: {numDots}
         </label>
         <Slider
-          defaultValue={[DEFAULT_NUM_DOTS]}
-          min={5}
-          max={200}
+          value={[numDots]}
+          min={1}
+          max={100}
           step={5}
+          onValueChange={(v) => { setNumDots(v[0]); numDotsRef.current = v[0]; }}
           onValueCommit={handleDotCountChange}
         />
       </div>
@@ -427,17 +466,23 @@ export default function PersonalTrackingDemo() {
       <Separator />
 
       <div className="space-y-1">
-        <label className="text-xs text-muted-foreground">Legend</label>
-        <div className="flex flex-col gap-1">
+        <label className="text-xs text-muted-foreground">Role visibility</label>
+        <div className="flex flex-col gap-2">
           {ROLES.map((role) => {
             const [r, g, b] = ROLE_COLORS[role];
             return (
-              <div key={role} className="flex items-center gap-2">
-                <span
-                  className="inline-block size-3 rounded-full border border-white/60"
-                  style={{ backgroundColor: `rgb(${r},${g},${b})` }}
+              <div key={role} className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="inline-block size-3 rounded-full border border-white/60"
+                    style={{ backgroundColor: `rgb(${r},${g},${b})` }}
+                  />
+                  <span className="text-xs">{ROLE_LABELS[role]}</span>
+                </div>
+                <Switch
+                  checked={visibleRoles[role]}
+                  onCheckedChange={(checked) => handleRoleToggle(role, checked)}
                 />
-                <span className="text-xs">{ROLE_LABELS[role]}</span>
               </div>
             );
           })}

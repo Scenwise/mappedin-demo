@@ -3,6 +3,15 @@ import { createContext } from 'react';
 
 type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
 
+export interface TrackedResponder {
+  id: number;
+  name: string;
+  role: string;
+  color: string;
+  latitude: number;
+  longitude: number;
+}
+
 interface AppContext {
   mapId: string;
   setMapId: SetState<string>;
@@ -14,6 +23,8 @@ interface AppContext {
   setHeatmapSpaceId: SetState<string | undefined>;
   stackedFloors: boolean;
   setStackedFloors: SetState<boolean>;
+  trackedResponders: TrackedResponder[];
+  setTrackedResponders: SetState<TrackedResponder[]>
 }
 
 export const AppContext = createContext<AppContext>({} as AppContext);

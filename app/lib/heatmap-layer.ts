@@ -28,6 +28,23 @@ export type PointFeatureCollection = {
   features: PointFeature[];
 };
 
+// Module-level index array — capacity grows lazily, length is set per call.
+const _indexCache: number[] = [];
+let _indexCacheCapacity = 0;
+
+function getIndices(count: number): number[] {
+  while (_indexCacheCapacity < count) {
+    _indexCache.push(_indexCacheCapacity);
+    _indexCacheCapacity++;
+  }
+  _indexCache.length = count;
+  return _indexCache;
+}
+
+function restoreIndices(): void {
+  _indexCache.length = _indexCacheCapacity;
+}
+
 /**
  * Creates a real-time heatmap layer using ScatterplotLayer + additive blending.
  * Gaussian radial falloff; overlaps accumulate for a heatmap-like glow.
@@ -67,18 +84,19 @@ export function createScatterplotHeatmapLayer(
 export function createHeatmapLayerFromPositions(
   positions: Float64Array,
   count: number,
+  frame: number,
 ): GaussianScatterLayer {
-  const data = Array.from({ length: count }, (_, i) => i);
-  return new GaussianScatterLayer({
+  const data = getIndices(count);
+  const layer = new GaussianScatterLayer({
     id: 'ScatterplotHeatmap',
     data,
     getPosition: (_d: number, { index }: { index: number }) => [
       positions[index * 2],
       positions[index * 2 + 1],
     ],
-    getRadius: 3,
+    getRadius: 2,
     radiusUnits: 'meters',
-    getFillColor: [255, 140, 0, 40],
+    getFillColor: [255, 140, 0, 30],
     filled: true,
     stroked: false,
     antialiasing: false,
@@ -91,24 +109,28 @@ export function createHeatmapLayerFromPositions(
       blendAlphaSrcFactor: 'one',
       blendAlphaDstFactor: 'one',
     },
-    transitions: {
-      getPosition: 200,
+    updateTriggers: {
+      getPosition: frame,
     },
   });
+  restoreIndices();
+  return layer;
 }
 
 /**
  * Creates a tracking dots layer from a flat Float64Array of [lng, lat, ...] pairs.
  * Solid opaque dots with normal blending for individual person tracking.
  * Optional colors: flat Uint8Array of [r, g, b, a, r, g, b, a, ...] per dot.
+ * frame: increment each tick so deck.gl re-uploads positions (prevents flicker).
  */
 export function createTrackingDotsLayer(
   positions: Float64Array,
   count: number,
   colors?: Uint8Array,
+  frame?: number,
 ): ScatterplotLayer {
-  const data = Array.from({ length: count }, (_, i) => i);
-  return new ScatterplotLayer({
+  const data = getIndices(count);
+  const layer = new ScatterplotLayer({
     id: 'TrackingDots',
     data,
     getPosition: (_d: number, { index }: { index: number }) => [
@@ -126,32 +148,35 @@ export function createTrackingDotsLayer(
         ]
       : [59, 130, 246, 200],
     filled: true,
-    stroked: true,
-    getLineColor: [255, 255, 255, 255],
-    getLineWidth: 0.5,
-    lineWidthUnits: 'meters',
-    antialiasing: true,
+    stroked: false,
+    antialiasing: false,
     updateTriggers: {
+      getPosition: frame,
       getFillColor: colors,
     },
-    transitions: {
-      getPosition: 200,
-    },
   });
+  restoreIndices();
+  return layer;
 }
 
 /**
- * Creates a TextLayer that renders a job-title label below each tracking dot.
+ * Creates a TextLayer that renders a job-title label above each tracking dot.
  * labels: string[] with one entry per person.
  * positionVersion: increment each frame to force position re-evaluation.
+ * zoom: current map zoom level — label size scales proportionally.
  */
 export function createTrackingLabelsLayer(
   positions: Float64Array,
   labels: string[],
   positionVersion: number,
+  zoom: number = 18,
 ): TextLayer {
-  const data = Array.from({ length: labels.length }, (_, i) => i);
-  return new TextLayer({
+  // Scale label size with zoom: base size 10 at zoom 18, halves every 2 zoom levels out.
+  const labelSize = Math.max(6, Math.round(10 * Math.pow(2, (zoom - 18) * 0.5)));
+
+  const count = labels.length;
+  const data = getIndices(count);
+  const layer = new TextLayer({
     id: 'TrackingLabels',
     data,
     getPosition: (_d: number, { index }: { index: number }) => [
@@ -159,19 +184,22 @@ export function createTrackingLabelsLayer(
       positions[index * 2 + 1],
     ],
     getText: (_d: number, { index }: { index: number }) => labels[index],
-    getSize: 11,
+    getSize: labelSize,
     getColor: [255, 255, 255, 230],
-    getBackgroundColor: [0, 0, 0, 140],
+    getBackgroundColor: [0, 0, 0, 150],
     background: true,
     backgroundPadding: [2, 1, 2, 1],
-    getPixelOffset: [0, 12],
+    getPixelOffset: [0, -16],  // above the dot, not below
     fontFamily: 'sans-serif',
     fontWeight: 'bold',
     billboard: true,
     updateTriggers: {
       getPosition: positionVersion,
+      getSize: zoom,
     },
   });
+  restoreIndices();
+  return layer;
 }
 
 export function calculateDistance(

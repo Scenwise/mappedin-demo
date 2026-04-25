@@ -7,61 +7,33 @@ import { Pause, Play, RotateCcw, Info } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
 import { MapboxOverlay } from '@deck.gl/mapbox';
-import {
-  createHeatmapLayerFromPositions,
-  calculateDistance,
-} from '@/lib/heatmap-layer';
+import { createHeatmapLayerFromPositions } from '@/lib/heatmap-layer';
+import { pointInGeoJSON } from '@/lib/geo-utils';
 
-const DEFAULT_NUM_TRAVELERS = 200;
+const DEFAULT_NUM_TRAVELERS = 2000;
 const UPDATES_PER_SECOND = 10;
-const WALKING_SPEED_MPS = 4.0;
+const WALKING_SPEED_MPS = 6.0;
 const DISTANCE_PER_UPDATE = WALKING_SPEED_MPS / UPDATES_PER_SECOND;
 
-interface PathPoint {
-  longitude: number;
-  latitude: number;
-}
-
-interface Segment {
-  fromLng: number;
-  fromLat: number;
-  toLng: number;
-  toLat: number;
-  length: number;
+interface GraphNode {
+  lat: number;
+  lng: number;
+  neighborIds: string[];
 }
 
 interface Traveler {
+  fromId: string;
+  toId: string;
+  progress: number; // 0..1 along the edge
   lng: number;
   lat: number;
-  segments: Segment[];
-  segIndex: number;
-  segProgress: number;
-  destinationSpace: mappedin.Space;
-  needsPath: boolean;
 }
 
-function pickRandomSpace(
-  spaces: mappedin.Space[],
-  excludeId?: string,
-): mappedin.Space {
-  const pool = excludeId ? spaces.filter((s) => s.id !== excludeId) : spaces;
-  return pool[Math.floor(Math.random() * pool.length)];
-}
-
-function buildSegments(coords: PathPoint[]): Segment[] {
-  const segments: Segment[] = [];
-  for (let i = 0; i < coords.length - 1; i++) {
-    const from = coords[i];
-    const to = coords[i + 1];
-    segments.push({
-      fromLng: from.longitude,
-      fromLat: from.latitude,
-      toLng: to.longitude,
-      toLat: to.latitude,
-      length: calculateDistance(from, to),
-    });
-  }
-  return segments;
+/** Approximate edge length in metres between two lat/lng points. */
+function edgeLength(a: GraphNode, b: GraphNode): number {
+  const dx = (b.lng - a.lng) * 111320 * Math.cos(a.lat * Math.PI / 180);
+  const dy = (b.lat - a.lat) * 110540;
+  return Math.sqrt(dx * dx + dy * dy);
 }
 
 export default function LiveHeatmapDemo() {
@@ -72,79 +44,74 @@ export default function LiveHeatmapDemo() {
   const [playing, setPlaying] = useState(false);
   const [numTravelers, setNumTravelers] = useState(DEFAULT_NUM_TRAVELERS);
 
+  const graphRef = useRef<Map<string, GraphNode>>(new Map());
+  const nodeIdsRef = useRef<string[]>([]);
   const travelersRef = useRef<Traveler[]>([]);
   const positionsRef = useRef<Float64Array>(new Float64Array(0));
   const overlayRef = useRef<MapboxOverlay | null>(null);
   const rafRef = useRef<number | null>(null);
   const lastTickRef = useRef<number>(0);
+  const frameRef = useRef(0);
 
-  const getFloorSpaces = useCallback((): mappedin.Space[] => {
-    return mapData
-      .getByType('space')
-      .filter(
-        (s) => s.floor.id === mapView.currentFloor.id,
-      ) as mappedin.Space[];
+  /** Build a flat graph from the current floor's nodes, filtered to those inside the floor polygon. */
+  const buildGraph = useCallback((): Map<string, GraphNode> => {
+    const graph = new Map<string, GraphNode>();
+    const floor = mapView.currentFloor;
+    const floorId = floor.id;
+    const polygon = floor.geoJSON?.geometry ?? null;
+
+    const nodes = (mapData.getByType('node') as mappedin.Node[]).filter((n) => {
+      if (n.floor.id !== floorId) return false;
+      if (n.space?.type === 'exterior') return false;
+      if (!polygon) return true;
+      return pointInGeoJSON(n.coordinate.longitude, n.coordinate.latitude, polygon);
+    });
+
+    const nodeSet = new Set(nodes.map((n) => n.id));
+
+    for (const n of nodes) {
+      graph.set(n.id, {
+        lat: n.coordinate.latitude,
+        lng: n.coordinate.longitude,
+        neighborIds: n.neighbors
+          .filter((nb) => nodeSet.has(nb.id))
+          .map((nb) => nb.id),
+      });
+    }
+
+    return graph;
   }, [mapData, mapView]);
 
-  function computeNewPath(traveler: Traveler, floorSpaces: mappedin.Space[]): void {
-    const fromSpace = traveler.destinationSpace;
-    const toSpace = pickRandomSpace(floorSpaces, fromSpace.id);
-    const directions = mapData.getDirections(fromSpace, toSpace);
-    if (!directions || !directions.coordinates.length) {
-      traveler.needsPath = true;
-      return;
-    }
-
-    const coords = directions.coordinates.map((c) => ({
-      longitude: c.longitude,
-      latitude: c.latitude,
-    }));
-    traveler.segments = buildSegments(coords);
-    traveler.segIndex = 0;
-    traveler.segProgress = 0;
-    traveler.destinationSpace = toSpace;
-    traveler.lng = coords[0].longitude;
-    traveler.lat = coords[0].latitude;
-    traveler.needsPath = false;
+  function pickRandomNeighbor(node: GraphNode, excludeId?: string): string | null {
+    const pool = excludeId
+      ? node.neighborIds.filter((id) => id !== excludeId)
+      : node.neighborIds;
+    if (pool.length === 0) return node.neighborIds[0] ?? null;
+    return pool[Math.floor(Math.random() * pool.length)];
   }
 
-  function moveTraveler(traveler: Traveler): void {
-    const segs = traveler.segments;
-    if (segs.length === 0) return;
+  function moveTraveler(t: Traveler): void {
+    const graph = graphRef.current;
+    const fromNode = graph.get(t.fromId);
+    const toNode = graph.get(t.toId);
+    if (!fromNode || !toNode) return;
 
-    let remaining = DISTANCE_PER_UPDATE;
+    const len = edgeLength(fromNode, toNode);
+    const step = len > 0 ? DISTANCE_PER_UPDATE / len : 1;
+    t.progress = Math.min(1, t.progress + step);
 
-    while (remaining > 0 && traveler.segIndex < segs.length) {
-      const seg = segs[traveler.segIndex];
-      const segRemaining = (1 - traveler.segProgress) * seg.length;
+    // Interpolate position
+    t.lng = fromNode.lng + (toNode.lng - fromNode.lng) * t.progress;
+    t.lat = fromNode.lat + (toNode.lat - fromNode.lat) * t.progress;
 
-      if (segRemaining <= remaining) {
-        remaining -= segRemaining;
-        traveler.segIndex++;
-        traveler.segProgress = 0;
-        if (traveler.segIndex < segs.length) {
-          const next = segs[traveler.segIndex];
-          traveler.lng = next.fromLng;
-          traveler.lat = next.fromLat;
-        } else {
-          const last = segs[segs.length - 1];
-          traveler.lng = last.toLng;
-          traveler.lat = last.toLat;
-        }
-      } else {
-        traveler.segProgress += remaining / seg.length;
-        const t = traveler.segProgress;
-        traveler.lng = seg.fromLng + (seg.toLng - seg.fromLng) * t;
-        traveler.lat = seg.fromLat + (seg.toLat - seg.fromLat) * t;
-        remaining = 0;
+    // Arrived at toNode — pick next edge
+    if (t.progress >= 1) {
+      const nextId = pickRandomNeighbor(toNode, t.fromId);
+      if (nextId) {
+        t.fromId = t.toId;
+        t.toId = nextId;
+        t.progress = 0;
       }
-    }
-
-    if (traveler.segIndex >= segs.length) {
-      traveler.segments = [];
-      traveler.segIndex = 0;
-      traveler.segProgress = 0;
-      traveler.needsPath = true;
     }
   }
 
@@ -152,18 +119,20 @@ export default function LiveHeatmapDemo() {
     const travelers = travelersRef.current;
     const pos = positionsRef.current;
     for (let i = 0; i < travelers.length; i++) {
-      pos[i * 2] = travelers[i].lng;
+      pos[i * 2]     = travelers[i].lng;
       pos[i * 2 + 1] = travelers[i].lat;
     }
   }
 
   function updateOverlay(): void {
     if (overlayRef.current) {
+      frameRef.current += 1;
       overlayRef.current.setProps({
         layers: [
           createHeatmapLayerFromPositions(
             positionsRef.current,
             travelersRef.current.length,
+            frameRef.current,
           ),
         ],
       });
@@ -172,42 +141,38 @@ export default function LiveHeatmapDemo() {
 
   const initializeTravelers = useCallback(
     (count: number): void => {
-      const floorSpaces = getFloorSpaces();
-      if (floorSpaces.length < 2) return;
+      const graph = buildGraph();
+      graphRef.current = graph;
+      const nodeIds = Array.from(graph.keys()).filter(
+        (id) => (graph.get(id)!.neighborIds.length > 0),
+      );
+      nodeIdsRef.current = nodeIds;
+      if (nodeIds.length < 2) return;
 
       const travelers: Traveler[] = [];
       for (let i = 0; i < count; i++) {
-        const startSpace = pickRandomSpace(floorSpaces);
-        const destSpace = pickRandomSpace(floorSpaces, startSpace.id);
-        const directions = mapData.getDirections(startSpace, destSpace);
-        if (!directions || !directions.coordinates.length) continue;
-
-        const coords = directions.coordinates.map((c) => ({
-          longitude: c.longitude,
-          latitude: c.latitude,
-        }));
-        const segments = buildSegments(coords);
+        const fromId = nodeIds[Math.floor(Math.random() * nodeIds.length)];
+        const fromNode = graph.get(fromId)!;
+        const toId = pickRandomNeighbor(fromNode) ?? fromId;
+        const toNode = graph.get(toId)!;
         travelers.push({
-          lng: coords[0].longitude,
-          lat: coords[0].latitude,
-          segments,
-          segIndex: 0,
-          segProgress: 0,
-          destinationSpace: destSpace,
-          needsPath: false,
+          fromId,
+          toId,
+          progress: Math.random(), // stagger starting positions along the edge
+          lng: fromNode.lng + (toNode.lng - fromNode.lng) * 0,
+          lat: fromNode.lat + (toNode.lat - fromNode.lat) * 0,
         });
       }
       travelersRef.current = travelers;
-      positionsRef.current = new Float64Array(travelers.length * 2);
+      positionsRef.current = new Float64Array(count * 2);
       syncPositions();
     },
-    [mapData, getFloorSpaces],
+    [buildGraph],
   );
 
   const tick = useCallback(
     (now: number) => {
       if (!isPlaying.current) return;
-
       const elapsed = now - lastTickRef.current;
       if (elapsed < 1000 / UPDATES_PER_SECOND) {
         rafRef.current = requestAnimationFrame(tick);
@@ -215,23 +180,13 @@ export default function LiveHeatmapDemo() {
       }
       lastTickRef.current = now;
 
-      const travelers = travelersRef.current;
-      const floorSpaces = travelers.some((t) => t.needsPath)
-        ? getFloorSpaces()
-        : null;
-
-      for (const t of travelers) {
-        if (t.needsPath && floorSpaces && floorSpaces.length >= 2) {
-          computeNewPath(t, floorSpaces);
-        }
-        moveTraveler(t);
-      }
+      for (const t of travelersRef.current) moveTraveler(t);
       syncPositions();
       updateOverlay();
 
       rafRef.current = requestAnimationFrame(tick);
     },
-    [getFloorSpaces],
+    [],
   );
 
   const startSimulation = useCallback(() => {
@@ -250,11 +205,7 @@ export default function LiveHeatmapDemo() {
   const setupOverlay = useCallback(() => {
     const map = mapView.Outdoor?.map;
     if (!map || overlayRef.current) return;
-
-    const overlay = new MapboxOverlay({
-      interleaved: false,
-      layers: [],
-    });
+    const overlay = new MapboxOverlay({ interleaved: false, layers: [] });
     map.addControl(overlay as unknown as Parameters<typeof map.addControl>[0]);
     overlayRef.current = overlay;
   }, [mapView]);
@@ -265,13 +216,9 @@ export default function LiveHeatmapDemo() {
       if (map) {
         try {
           map.removeControl(
-            overlayRef.current as unknown as Parameters<
-              typeof map.removeControl
-            >[0],
+            overlayRef.current as unknown as Parameters<typeof map.removeControl>[0],
           );
-        } catch {
-          // overlay already removed
-        }
+        } catch { /* already removed */ }
       }
       overlayRef.current = null;
     }
@@ -286,7 +233,6 @@ export default function LiveHeatmapDemo() {
 
   function handleEnabled(enabled: boolean) {
     isEnabled.current = enabled;
-
     if (enabled) {
       setupOverlay();
       initializeTravelers(numTravelers);
@@ -309,9 +255,7 @@ export default function LiveHeatmapDemo() {
     const next = !isPlaying.current;
     isPlaying.current = next;
     setPlaying(next);
-    if (next) {
-      startSimulation();
-    }
+    if (next) startSimulation();
   }
 
   function handleReset() {
@@ -320,6 +264,9 @@ export default function LiveHeatmapDemo() {
     stopSimulation();
     initializeTravelers(numTravelers);
     updateOverlay();
+    isPlaying.current = true;
+    setPlaying(true);
+    startSimulation();
   }
 
   function handleTravelerCountChange(value: number[]) {
@@ -346,20 +293,10 @@ export default function LiveHeatmapDemo() {
       onEnabled={handleEnabled}
     >
       <div className="flex items-center gap-2">
-        <Button
-          onClick={handlePlayPause}
-          variant="ghost"
-          size="icon"
-          className="size-8"
-        >
+        <Button onClick={handlePlayPause} variant="ghost" size="icon" className="size-8">
           {playing ? <Pause /> : <Play />}
         </Button>
-        <Button
-          onClick={handleReset}
-          variant="ghost"
-          size="icon"
-          className="size-8"
-        >
+        <Button onClick={handleReset} variant="ghost" size="icon" className="size-8">
           <RotateCcw />
         </Button>
       </div>
@@ -368,13 +305,14 @@ export default function LiveHeatmapDemo() {
 
       <div className="space-y-1">
         <label className="text-xs text-muted-foreground">
-          Travelers: {travelersRef.current.length}
+          Travelers: {numTravelers}
         </label>
         <Slider
-          defaultValue={[DEFAULT_NUM_TRAVELERS]}
-          min={50}
-          max={2000}
-          step={50}
+          value={[numTravelers]}
+          min={1000}
+          max={10000}
+          step={100}
+          onValueChange={(v) => setNumTravelers(v[0])}
           onValueCommit={handleTravelerCountChange}
         />
       </div>
@@ -382,10 +320,7 @@ export default function LiveHeatmapDemo() {
       <Separator />
 
       <p>
-        <Info
-          size="14"
-          className="inline align-middle mr-1 text-muted-foreground"
-        />
+        <Info size="14" className="inline align-middle mr-1 text-muted-foreground" />
         <i className="text-muted-foreground text-xs">
           Simulated crowd movement using pathfinding between spaces.
         </i>

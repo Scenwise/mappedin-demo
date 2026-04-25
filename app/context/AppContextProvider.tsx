@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { AppContext } from './AppContext';
+import { AppContext, type TrackedResponder } from './AppContext';
 import type { TNavigationTarget } from '@mappedin/react-sdk/mappedin-js/src/types';
 
 interface AppContextProviderProps {
@@ -14,6 +14,7 @@ export default function AppContextProvider({
   const [navigationTo, setNavigationTo] = useState<TNavigationTarget>();
   const [heatmapSpaceId, setHeatmapSpaceId] = useState<string>();
   const [stackedFloors, setStackedFloors] = useState<boolean>(false);
+  const [trackedResponders, setTrackedResponders] = useState<TrackedResponder[]>([])
 
   return (
     <AppContext.Provider
@@ -27,7 +28,9 @@ export default function AppContextProvider({
       heatmapSpaceId,
       setHeatmapSpaceId,
       stackedFloors,
-      setStackedFloors
+      setStackedFloors,
+      trackedResponders,
+      setTrackedResponders
     }}
   >
     {children}
